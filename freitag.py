@@ -20,7 +20,7 @@
 
 
 import sys
-import argparse # backported from 2.7
+import argparse
 from string import replace, Template
 from shutil import move
 from os import makedirs, sep
@@ -50,14 +50,18 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('command', choices=['get', 'set', 'rename', 'extract'])
     parser.add_argument('files', nargs='+')
-    parser.add_argument('--format', '-f', default=DEFAULT_FORMAT)
+    parser.add_argument('--format', '-f', default=DEFAULT_FORMAT,
+                        help='The format used by "get", "rename" and "extract" '
+                        + 'commands. You can use the following placeholders: '
+                        + '%%album, %%artist, %%title, %%discnumber, '
+                        + '%%tracknumber, %%date')
     # tag setters
-    parser.add_argument('--album', '-b')
-    parser.add_argument('--artist', '-a')
-    parser.add_argument('--title', '-t')
-    parser.add_argument('--discnumber', '-d')
-    parser.add_argument('--tracknumber', '-n')
-    parser.add_argument('--date', '-y')
+    parser.add_argument('--album', '-b', help='The album name')
+    parser.add_argument('--artist', '-a', help='The artist name')
+    parser.add_argument('--title', '-t', help='The track title')
+    parser.add_argument('--discnumber', '-d', help='The disc number')
+    parser.add_argument('--tracknumber', '-n', help='The track number')
+    parser.add_argument('--date', '-y', help='The track date (year)')
 
     args = parser.parse_args()
 
