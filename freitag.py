@@ -4,7 +4,7 @@
 freitag.py
 
 Created by Giuseppe Capizzi on 2010-08-09.
-Copyright (c) 2010 Giuseppe Capizzi. All rights reserved.
+Copyright (c) 2010-2011 Giuseppe Capizzi. All rights reserved.
 """
 
 
