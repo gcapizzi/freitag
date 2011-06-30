@@ -48,13 +48,14 @@ class FreiMP3(EasyMP3):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=['get', 'set', 'rename', 'extract'])
+    parser.add_argument('command', choices=['get', 'set', 'rename',
+                                            'extract'])
     parser.add_argument('files', nargs='+')
     parser.add_argument('--format', '-f', default=DEFAULT_FORMAT,
-                        help='The format used by "get", "rename" and "extract" '
-                        + 'commands. You can use the following placeholders: '
-                        + '%%album, %%artist, %%title, %%discnumber, '
-                        + '%%tracknumber, %%date')
+                        help='The format used by "get", "rename" and '
+                        + '"extract" commands. You can use the following '
+                        + 'placeholders: %%album, %%artist, %%title, '
+                        + '%%discnumber, %%tracknumber, %%date')
     # tag setters
     parser.add_argument('--album', '-b', help='The album name')
     parser.add_argument('--artist', '-a', help='The artist name')
