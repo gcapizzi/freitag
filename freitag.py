@@ -80,6 +80,10 @@ def main():
 
 
 def get(mp3, format):
+    # remove the slash and everything after it in track number
+    # and zero-pad it
+    mp3['tracknumber'] = mp3['tracknumber'].split('/')[0].rjust(2, '0')
+
     return FormatTemplate(format).safe_substitute(mp3)
 
 
