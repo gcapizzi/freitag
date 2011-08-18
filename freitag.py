@@ -40,10 +40,19 @@ class FormatTemplate(Template):
 
 class FreiMP3(EasyMP3):
     def __getitem__(self, key):
+        value = ''
+
         try:
-            return super(EasyMP3, self).__getitem__(key)[0]
+            value = super(EasyMP3, self).__getitem__(key)[0]
+
+            # remove the slash and everything after it in track number
+            # and zero-pad it
+            if key == 'tracknumber':
+                value = value.split('/')[0].rjust(2, '0')
         except KeyError:
-            return ''
+            pass
+
+        return value
 
 
 def main():
@@ -80,10 +89,6 @@ def main():
 
 
 def get(mp3, format):
-    # remove the slash and everything after it in track number
-    # and zero-pad it
-    mp3['tracknumber'] = mp3['tracknumber'].split('/')[0].rjust(2, '0')
-
     return FormatTemplate(format).safe_substitute(mp3)
 
 
