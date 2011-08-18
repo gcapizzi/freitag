@@ -24,7 +24,7 @@ import argparse
 from string import replace, Template
 from shutil import move
 from os import makedirs, sep
-from os.path import dirname, join
+from os.path import dirname, join, exists
 from re import sub, escape, search
 
 from mutagen.mp3 import EasyMP3
@@ -107,7 +107,11 @@ def rename(mp3, format):
     except OSError:
         pass
 
-    move(mp3.filename, dest)
+    if (exists(dest)):
+        print "%s already exists! Skipping..." % dest
+        return
+    else:
+        move(mp3.filename, dest)
 
 
 def get_regex_for_tag(m):
