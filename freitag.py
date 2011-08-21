@@ -119,22 +119,25 @@ def rename(mp3, format):
         move(mp3.filename, dest)
 
 
-def get_regex_for_tag(m):
-    return '(?P<%(tagname)s>[^%(separator)s]*)' % {'tagname': m.group(1),
-                                                   'separator': sep}
+def _get_regex_for_tag(m):
+    return '(?P<%(tagname)s>[^%(slash)s]*)' % {'tagname': m.group(1),
+                                               'slash': sep}
 
 
 def extract(mp3, format):
     # we need a FormatTemplate instance to get delimiter and idpattern
     t = FormatTemplate('')
+    delimiter = t.delimiter
+    idpattern = t.idpattern
+
     # the regex pattern that matches tags in the format string
     # (delimiter must be escaped twice to be successfully substistuted in the
     # next step)
-    tag_pattern = '%(del)s(%(pattern)s)' % {'del': escape(escape(t.delimiter)),
-                                            'pattern': t.idpattern}
+    tag_pattern = '%(del)s(%(pattern)s)' % {'del': escape(escape(delimiter)),
+                                            'pattern': idpattern}
 
     # turn the format string into a regex and parse the filename
-    regex = sub(tag_pattern, get_regex_for_tag, escape(format))
+    regex = sub(tag_pattern, _get_regex_for_tag, escape(format))
     values = search(regex, mp3.filename).groupdict()
 
     # convert all values to unicode
