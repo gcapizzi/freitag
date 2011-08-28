@@ -65,6 +65,8 @@ def main():
                         + '"extract" commands. You can use the following '
                         + 'placeholders: %%album, %%artist, %%title, '
                         + '%%discnumber, %%tracknumber, %%date')
+    parser.add_argument('--humanize', action="store_true", default=False)
+
     # tag setters
     parser.add_argument('--album', '-b', help='The album name')
     parser.add_argument('--artist', '-a', help='The artist name')
@@ -85,7 +87,7 @@ def main():
         elif args.command == 'rename':
             rename(mp3, args.format)
         elif args.command == 'extract':
-            extract(mp3, args.format)
+            extract(mp3, args.format, args.humanize)
 
 
 def get(mp3, format):
@@ -124,7 +126,11 @@ def _get_regex_for_tag(m):
                                                'slash': sep}
 
 
-def extract(mp3, format):
+def _humanize(string):
+    return string.replace('_', ' ').title()
+
+
+def extract(mp3, format, humanize=False):
     # we need a FormatTemplate instance to get delimiter and idpattern
     t = FormatTemplate('')
     delimiter = t.delimiter
@@ -142,6 +148,11 @@ def extract(mp3, format):
 
     # convert all values to unicode
     values = dict([(name, unicode(value)) for (name,value) in values.items()])
+
+    # humanize
+    if humanize:
+        values = dict([(name, _humanize(value)) for (name,value)
+                      in values.items()])
 
     mp3.update(values)
     mp3.save()
