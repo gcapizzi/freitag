@@ -65,7 +65,10 @@ def main():
                         + '"extract" commands. You can use the following '
                         + 'placeholders: %%album, %%artist, %%title, '
                         + '%%discnumber, %%tracknumber, %%date')
-    parser.add_argument('--humanize', action="store_true", default=False)
+    parser.add_argument('--humanize', action="store_true", default=False,
+                        help='When extracting, confert all fields from '
+                        + 'lowecase_with_underscores format to Capitalized '
+                        + 'With Spaces format')
 
     # tag setters
     parser.add_argument('--album', '-b', help='The album name')
