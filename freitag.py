@@ -31,6 +31,14 @@ from mutagen.mp3 import EasyMP3
 
 
 DEFAULT_FORMAT = "%tracknumber - %artist - %title.mp3"
+TAGS = [
+    {'name': 'album',       'abbr': 'b', 'help': 'The album name'},
+    {'name': 'artist',      'abbr': 'a', 'help': 'The artist name'},
+    {'name': 'title',       'abbr': 't', 'help': 'The track title'},
+    {'name': 'discnumber',  'abbr': 'd', 'help': 'The disc number'},
+    {'name': 'tracknumber', 'abbr': 'n', 'help': 'The track number'},
+    {'name': 'date',        'abbr': 'y', 'help': 'The track date (year)'}
+]
 
 
 class FormatTemplate(Template):
@@ -71,12 +79,10 @@ def main():
                         + 'With Spaces format')
 
     # tag setters
-    parser.add_argument('--album', '-b', help='The album name')
-    parser.add_argument('--artist', '-a', help='The artist name')
-    parser.add_argument('--title', '-t', help='The track title')
-    parser.add_argument('--discnumber', '-d', help='The disc number')
-    parser.add_argument('--tracknumber', '-n', help='The track number')
-    parser.add_argument('--date', '-y', help='The track date (year)')
+    for tag in TAGS:
+        long_opt = '--%s' % tag['name']
+        short_opt = '-%s' % tag['abbr']
+        parser.add_argument(long_opt, short_opt, help=tag['help'])
 
     args = parser.parse_args()
 
@@ -100,10 +106,10 @@ def get(mp3, format):
 def set(mp3, args):
     # turn values from the command line into unicode strings,
     # remove unrelated and empty command line args
+    tag_names = [tag['name'] for tag in TAGS]
     tags = dict([(name, unicode(value)) for (name, value)
                  in args.__dict__.items()
-                 if name not in ('command', 'files', 'format')
-                 and value is not None])
+                 if name in tag_names and value is not None])
     mp3.update(tags)
     mp3.save()
 
