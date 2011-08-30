@@ -131,8 +131,15 @@ def rename(mp3, format):
 
 
 def _get_regex_for_tag(m):
-    return '(?P<%(tagname)s>[^%(slash)s]*)' % {'tagname': m.group(1),
-                                               'slash': sep}
+    tag_name = m.group(1)
+    tag_regex = '[^%s]*' % sep
+
+    # non-greedy regex for tracknumber tag
+    if tag_name == 'tracknumber':
+        tag_name += '?'
+
+    return '(?P<%(tag_name)s>%(tag_regex)s)' % {'tag_name': tag_name,
+                                                'tag_regex': tag_regex}
 
 
 def _humanize(string):
