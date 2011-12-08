@@ -66,7 +66,7 @@ class FreiMP3(EasyMP3):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('command', choices=['get', 'set', 'rename',
-                                            'extract'])
+                                            'extract', 'humanize'])
     parser.add_argument('files', nargs='+')
     parser.add_argument('--format', '-f', default=DEFAULT_FORMAT,
                         help='The format used by "get", "rename" and '
@@ -97,6 +97,8 @@ def main():
             rename(mp3, args.format)
         elif args.command == 'extract':
             extract(mp3, args.format, args.humanize)
+        elif args.command == 'humanize':
+            humanize(mp3)
 
 
 def get(mp3, format):
@@ -171,6 +173,14 @@ def extract(mp3, format, humanize=False):
                       in values.items()])
 
     mp3.update(values)
+    mp3.save()
+
+
+def humanize(mp3):
+    mp3['album']  = _humanize(mp3['album'])
+    mp3['artist'] = _humanize(mp3['artist'])
+    mp3['title']  = _humanize(mp3['title'])
+
     mp3.save()
 
 
