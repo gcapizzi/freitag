@@ -136,7 +136,7 @@ def _get_regex_for_tag(m):
 
     # non-greedy regex for tracknumber tag
     if tag_name == 'tracknumber':
-        tag_name += '?'
+        tag_regex += '?'
 
     return '(?P<%(tag_name)s>%(tag_regex)s)' % {'tag_name': tag_name,
                                                 'tag_regex': tag_regex}
