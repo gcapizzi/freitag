@@ -117,7 +117,7 @@ def set(mp3, args):
 
 
 def rename(mp3, format):
-    dest = get(mp3, format)
+    dest = get(mp3, format).strip()
 
     # create missing directories
     try:
@@ -145,7 +145,7 @@ def _get_regex_for_tag(m):
 
 
 def _humanize(string):
-    return string.replace('_', ' ').title()
+    return string.replace('_', ' ').strip().title()
 
 
 def extract(mp3, format, humanize=False):
