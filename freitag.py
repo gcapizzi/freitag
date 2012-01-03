@@ -145,7 +145,7 @@ def _get_regex_for_tag(m):
 
 
 def _humanize(string):
-    return string.replace('_', ' ').strip().title()
+    return string.replace('_', ' ').capwords()
 
 
 def extract(mp3, format, humanize=False):
