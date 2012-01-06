@@ -74,7 +74,7 @@ def main():
                         + 'placeholders: %%album, %%artist, %%title, '
                         + '%%discnumber, %%tracknumber, %%date')
     parser.add_argument('--humanize', action="store_true", default=False,
-                        help='When extracting, confert all fields from '
+                        help='When extracting, convert all fields from '
                         + 'lowecase_with_underscores format to Capitalized '
                         + 'With Spaces format')
 
