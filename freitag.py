@@ -90,7 +90,7 @@ def main():
         mp3 = FreiMP3(filename)
 
         if args.command == 'get':
-            print get(mp3, args.format)
+            get(mp3, args.format)
         elif args.command == 'set':
             set(mp3, args)
         elif args.command == 'rename':
@@ -101,8 +101,12 @@ def main():
             humanize(mp3)
 
 
+def _format(string, dictionary):
+    return FormatTemplate(string).safe_substitute(dictionary)
+
+
 def get(mp3, format):
-    return FormatTemplate(format).safe_substitute(mp3)
+    print _format(format, mp3).strip()
 
 
 def _unicode(dictionary):
@@ -125,7 +129,7 @@ def set(mp3, args):
 
 
 def rename(mp3, format):
-    dest = get(mp3, format).strip()
+    dest = _format(format, mp3)
 
     # create missing directories
     try:
