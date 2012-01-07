@@ -71,8 +71,8 @@ def main():
     parser.add_argument('--format', '-f', default=DEFAULT_FORMAT,
                         help='The format used by "get", "rename" and '
                         + '"extract" commands. You can use the following '
-                        + 'placeholders: %%album, %%artist, %%title, '
-                        + '%%discnumber, %%tracknumber, %%date')
+                        + 'placeholders: '
+                        + ', '.join(['%%{0}'.format(t['name']) for t in TAGS]))
     parser.add_argument('--humanize', action="store_true", default=False,
                         help='When extracting, convert all fields from '
                         + 'lowecase_with_underscores format to Capitalized '
