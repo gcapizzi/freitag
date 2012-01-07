@@ -116,7 +116,7 @@ def _save(mp3, tags):
 
 def _filter_tags(dictionary):
     tag_names = [tag['name'] for tag in TAGS]
-    tags = dict((name, value) for name, value in dictionary.items()
+    return dict((name, value) for name, value in dictionary.items()
                 if name in tag_names and value is not None)
 
 
