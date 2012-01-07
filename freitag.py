@@ -112,6 +112,7 @@ def set(mp3, args):
     tags = dict([(name, unicode(value)) for (name, value)
                  in args.__dict__.items()
                  if name in tag_names and value is not None])
+
     mp3.update(tags)
     mp3.save()
 
