@@ -105,16 +105,22 @@ def get(mp3, format):
     return FormatTemplate(format).safe_substitute(mp3)
 
 
-def set(mp3, args):
-    # turn values from the command line into unicode strings,
-    # remove unrelated and empty command line args
-    tag_names = [tag['name'] for tag in TAGS]
-    tags = dict([(name, unicode(value)) for (name, value)
-                 in args.__dict__.items()
-                 if name in tag_names and value is not None])
+def _save(mp3, tags):
+    # convert everything to unicode before saving
+    tags = dict((name, unicode(value)) for (name, value) in tags.items())
 
     mp3.update(tags)
     mp3.save()
+
+
+def _filter_tags(dictionary):
+    tag_names = [tag['name'] for tag in TAGS]
+    tags = dict((name, value) for name, value in dictionary.items()
+                if name in tag_names and value is not None)
+
+
+def set(mp3, args):
+    _save(mp3, _filter_tags(args.__dict__))
 
 
 def rename(mp3, format):
@@ -175,9 +181,6 @@ def _extract(string, format):
     regex = sub(tag_pattern, _get_regex_for_tag, escape(format))
     values = search(regex, string).groupdict()
 
-    # convert all values to unicode
-    values = dict([(name, unicode(value)) for (name,value) in values.items()])
-
     return values
 
 
@@ -188,15 +191,13 @@ def extract(mp3, format, humanize=False):
     if humanize:
         tags = _humanize_tags(tags)
 
-    mp3.update(tags)
-    mp3.save()
+    _save(mp3, tags)
 
 
 def humanize(mp3):
     tags = _humanize_tags(mp3)
 
-    mp3.update(tags)
-    mp3.save()
+    _save(mp3, tags)
 
 
 if __name__ == '__main__':
