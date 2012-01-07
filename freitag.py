@@ -102,23 +102,42 @@ def main():
 
 
 def _format(string, dictionary):
+    """Substitute tags in the %tag form with values from dictionary.
+
+    >>> _format("%artist - %title", {'artist': 'Bob Marley', \
+                                     'title':  'One Love'})
+    'Bob Marley - One Love'
+    """
     return FormatTemplate(string).safe_substitute(dictionary)
 
 
 def get(mp3, format):
+    """Print the song informations according to the specified formats."""
     print _format(format, mp3).strip()
 
 
 def _unicode(dictionary):
+    """Convert all values in dictionary to unicode strings.
+
+    >>> _unicode({'artist': 'Bob Marley', 'title': 'One Love'})
+    {'artist': u'Bob Marley', 'title': u'One Love'}
+    """
     return dict((name, unicode(value)) for (name, value) in dictionary.items())
 
 
 def _save(mp3, tags):
+    """Update mp3 with tags and save it."""
     mp3.update(_unicode(tags))
     mp3.save()
 
 
 def _filter_tags(dictionary):
+    """Filter out every entry in dictionary that is not an mp3 tag or is None.
+
+    >>> _filter_tags({'artist': 'Bob Marley', 'title': 'One Love', \
+                      'foo': 'bar'})
+    {'artist': 'Bob Marley', 'title': 'One Love'}
+    """
     tag_names = [tag['name'] for tag in TAGS]
     return dict((name, value) for name, value in dictionary.items()
                 if name in tag_names and value is not None)
@@ -166,6 +185,12 @@ def _humanize(string):
 
 
 def _humanize_tags(tags):
+    """Humanize album, title and artist tags from tags dictionary.
+
+    >>> _humanize_tags({'artist': 'bob marley', 'title': 'One_love', \
+                        'album': 'Exodus'})
+    {'album': 'Exodus', 'title': 'One Love', 'artist': 'Bob Marley'}
+    """
     tags_to_humanize = ['album', 'artist', 'title']
 
     for tag in tags_to_humanize:
