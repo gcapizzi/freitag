@@ -149,7 +149,17 @@ def _humanize(string):
     return string.replace('_', ' ').capwords()
 
 
-def extract(mp3, format, humanize=False):
+def _humanize_tags(tags):
+    tags_to_humanize = ['album', 'artist', 'title']
+
+    for tag in tags_to_humanize:
+        if tags.has_key(tag):
+            tags[tag] = _humanize(tags[tag])
+
+    return tags
+
+
+def _extract(string, format):
     # we need a FormatTemplate instance to get delimiter and idpattern
     t = FormatTemplate('')
     delimiter = t.delimiter
@@ -163,25 +173,29 @@ def extract(mp3, format, humanize=False):
 
     # turn the format string into a regex and parse the filename
     regex = sub(tag_pattern, _get_regex_for_tag, escape(format))
-    values = search(regex, mp3.filename).groupdict()
+    values = search(regex, string).groupdict()
 
     # convert all values to unicode
     values = dict([(name, unicode(value)) for (name,value) in values.items()])
 
+    return values
+
+
+def extract(mp3, format, humanize=False):
+    tags = _extract(mp3.filename, format)
+
     # humanize
     if humanize:
-        values = dict([(name, _humanize(value)) for (name,value)
-                      in values.items()])
+        tags = _humanize_tags(tags)
 
-    mp3.update(values)
+    mp3.update(tags)
     mp3.save()
 
 
 def humanize(mp3):
-    mp3['album']  = _humanize(mp3['album'])
-    mp3['artist'] = _humanize(mp3['artist'])
-    mp3['title']  = _humanize(mp3['title'])
+    tags = _humanize_tags(mp3)
 
+    mp3.update(tags)
     mp3.save()
 
 
