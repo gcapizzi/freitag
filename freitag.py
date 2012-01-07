@@ -196,9 +196,7 @@ def extract(mp3, format, humanize=False):
 
 
 def humanize(mp3):
-    tags = _humanize_tags(mp3)
-
-    _save(mp3, tags)
+    _save(mp3, _humanize_tags(tags))
 
 
 if __name__ == '__main__':
