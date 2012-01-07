@@ -105,11 +105,12 @@ def get(mp3, format):
     return FormatTemplate(format).safe_substitute(mp3)
 
 
-def _save(mp3, tags):
-    # convert everything to unicode before saving
-    tags = dict((name, unicode(value)) for (name, value) in tags.items())
+def _unicode(dictionary):
+    return dict((name, unicode(value)) for (name, value) in dictionary.items())
 
-    mp3.update(tags)
+
+def _save(mp3, tags):
+    mp3.update(_unicode(tags))
     mp3.save()
 
 
