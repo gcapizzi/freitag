@@ -180,9 +180,8 @@ def _extract(string, format):
 
     # turn the format string into a regex and parse the filename
     regex = sub(tag_pattern, _get_regex_for_tag, escape(format))
-    values = search(regex, string).groupdict()
 
-    return values
+    return search(regex, string).groupdict()
 
 
 def extract(mp3, format, humanize=False):
