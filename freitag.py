@@ -21,7 +21,7 @@
 
 import sys
 import argparse
-from string import replace, Template
+from string import replace, Template, capwords
 from shutil import move
 from os import makedirs, sep
 from os.path import dirname, join, exists
@@ -157,7 +157,12 @@ def _get_regex_for_tag(m):
 
 
 def _humanize(string):
-    return string.replace('_', ' ').capwords()
+    """Convert string from lowecase_with_underscores to Capitalized With Spaces.
+
+    >>> _humanize('bob_marley_-_one_love')
+    'Bob Marley - One Love'
+    """
+    return capwords(string.replace('_', ' '))
 
 
 def _humanize_tags(tags):
