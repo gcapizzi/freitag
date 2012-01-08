@@ -29,6 +29,8 @@ from re import sub, escape, search
 
 from mutagen.mp3 import EasyMP3
 
+TAG_DELIMITER = '%'
+TAG_IDPATTERN = '[a-z]+'
 
 DEFAULT_FORMAT = "%tracknumber - %artist - %title.mp3"
 TAGS = [
@@ -42,8 +44,8 @@ TAGS = [
 
 
 class FormatTemplate(Template):
-    delimiter = '%'
-    idpattern = '[a-z]+'
+    delimiter = TAG_DELIMITER
+    idpattern = TAG_IDPATTERN
 
 
 class FreiMP3(EasyMP3):
