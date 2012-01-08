@@ -133,7 +133,7 @@ def _save(mp3, tags):
 
 
 def _filter_tags(dictionary):
-    """Filter out every entry in dictionary that is not an mp3 tag or is None.
+    """Filter out every entry in dictionary that is not a tag or is None.
 
     >>> unfiltered = {'artist': 'Bob Marley', 'title': 'One Love', 'foo': 'bar'}
     >>> filtered = _filter_tags(unfiltered)
