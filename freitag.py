@@ -189,9 +189,13 @@ def _humanize(string):
 def _humanize_tags(tags):
     """Humanize album, title and artist tags from tags dictionary.
 
-    >>> _humanize_tags({'artist': 'bob marley', 'title': 'One_love', \
-                        'album': 'Exodus'})
-    {'album': 'Exodus', 'title': 'One Love', 'artist': 'Bob Marley'}
+    >>> humanized = _humanize_tags({'artist': 'bob marley', \
+                                    'title':  'One_love', \
+                                    'album':  'Exodus'})
+    >>> expected = {'album': 'Exodus', 'title': 'One Love', \
+                    'artist': 'Bob Marley'}
+    >>> humanized == expected
+    True
     """
     tags_to_humanize = ['album', 'artist', 'title']
 
