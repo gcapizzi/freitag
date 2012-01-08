@@ -32,14 +32,14 @@ from mutagen.mp3 import EasyMP3
 TAG_DELIMITER = '%'
 TAG_IDPATTERN = '[a-z]+'
 DEFAULT_FORMAT = "%tracknumber - %artist - %title.mp3"
-TAGS = [
-    {'name': 'album',       'abbr': 'b', 'help': 'The album name'},
-    {'name': 'artist',      'abbr': 'a', 'help': 'The artist name'},
-    {'name': 'title',       'abbr': 't', 'help': 'The track title'},
-    {'name': 'discnumber',  'abbr': 'd', 'help': 'The disc number'},
-    {'name': 'tracknumber', 'abbr': 'n', 'help': 'The track number'},
-    {'name': 'date',        'abbr': 'y', 'help': 'The track date (year)'}
-]
+TAGS = {
+    'album':       {'abbr': 'b', 'help': 'The album name'},
+    'artist':      {'abbr': 'a', 'help': 'The artist name'},
+    'title':       {'abbr': 't', 'help': 'The track title'},
+    'discnumber':  {'abbr': 'd', 'help': 'The disc number'},
+    'tracknumber': {'abbr': 'n', 'help': 'The track number'},
+    'date':        {'abbr': 'y', 'help': 'The track date (year)'}
+ }
 
 
 class FormatTemplate(Template):
@@ -75,17 +75,17 @@ def main():
                         help='The format used by "get", "rename" and '
                         + '"extract" commands. You can use the following '
                         + 'placeholders: '
-                        + ', '.join(['%%{0}'.format(t['name']) for t in TAGS]))
+                        + ', '.join(['%%{0}'.format(t) for t in TAGS]))
     parser.add_argument('--humanize', action="store_true", default=False,
                         help='When extracting, convert all fields from '
                         + 'lowecase_with_underscores format to Capitalized '
                         + 'With Spaces format')
 
     # tag setters
-    for tag in TAGS:
-        long_opt = '--%s' % tag['name']
-        short_opt = '-%s' % tag['abbr']
-        parser.add_argument(long_opt, short_opt, help=tag['help'])
+    for tag, props in TAGS.iteritems():
+        long_opt = '--%s' % tag
+        short_opt = '-%s' % props['abbr']
+        parser.add_argument(long_opt, short_opt, help=props['help'])
 
     args = parser.parse_args()
 
@@ -148,9 +148,8 @@ def _filter_tags(dictionary):
     >>> filtered == expected
     True
     """
-    tag_names = [tag['name'] for tag in TAGS]
     return dict((name, value) for name, value in dictionary.items()
-                if name in tag_names and value is not None)
+                if name in TAGS and value is not None)
 
 
 def set(mp3s, args):
