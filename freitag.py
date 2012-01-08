@@ -31,7 +31,6 @@ from mutagen.mp3 import EasyMP3
 
 TAG_DELIMITER = '%'
 TAG_IDPATTERN = '[a-z]+'
-
 DEFAULT_FORMAT = "%tracknumber - %artist - %title.mp3"
 TAGS = [
     {'name': 'album',       'abbr': 'b', 'help': 'The album name'},
@@ -168,6 +167,10 @@ def rename(mp3, format):
 
 
 def _get_regex_for_tag(m):
+    """Take a match object and return a regex with a properly named group.
+
+    This function is made to be used as replacement function in a re.sub() call.
+    """
     tag_name = m.group(1)
     tag_regex = '[^%s]*' % sep
 
@@ -175,8 +178,8 @@ def _get_regex_for_tag(m):
     if tag_name == 'tracknumber':
         tag_regex += '?'
 
-    return '(?P<%(tag_name)s>%(tag_regex)s)' % {'tag_name': tag_name,
-                                                'tag_regex': tag_regex}
+    return '(?P<{tag_name}>{tag_regex})'.format(tag_name=tag_name,
+                                                tag_regex=tag_regex)
 
 
 def _humanize(string):
