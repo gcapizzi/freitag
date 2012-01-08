@@ -147,10 +147,12 @@ def _filter_tags(dictionary):
 
 
 def set(mp3, args):
+    """Tag mp3 using arguments from argparse."""
     _save(mp3, _filter_tags(args.__dict__))
 
 
 def rename(mp3, format):
+    """Rename mp3 according to format."""
     dest = _format(format, mp3)
 
     # create missing directories
@@ -230,6 +232,10 @@ def _extract(string, format):
 
 
 def extract(mp3, format, humanize=False):
+    """Tag mp3 extracting tag values from its filename according to format.
+
+    If humanize is True, humanize tags before tagging.
+    """
     tags = _extract(mp3.filename, format)
 
     # humanize
@@ -240,6 +246,7 @@ def extract(mp3, format, humanize=False):
 
 
 def humanize(mp3):
+    """Humanize tags in mp3."""
     _save(mp3, _humanize_tags(tags))
 
 
