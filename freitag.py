@@ -87,19 +87,23 @@ def main():
 
     args = parser.parse_args()
 
-    for filename in args.files:
-        mp3 = FreiMP3(filename)
+    mp3s = _mp3s(args.files)
 
-        if args.command == 'get':
-            get(mp3, args.format)
-        elif args.command == 'set':
-            set(mp3, args)
-        elif args.command == 'rename':
-            rename(mp3, args.format)
-        elif args.command == 'extract':
-            extract(mp3, args.format, args.humanize)
-        elif args.command == 'humanize':
-            humanize(mp3)
+    if args.command == 'get':
+        get(mp3s, args.format)
+    elif args.command == 'set':
+        set(mp3s, args)
+    elif args.command == 'rename':
+        rename(mp3s, args.format)
+    elif args.command == 'extract':
+        extract(mp3s, args.format, args.humanize)
+    elif args.command == 'humanize':
+        humanize(mp3s)
+
+
+def _mp3s(files):
+    """Return a list of `FreiMP3` instances from a list of files."""
+    return [FreiMP3(file) for file in files]
 
 
 def _format(string, dictionary):
@@ -112,9 +116,10 @@ def _format(string, dictionary):
     return FormatTemplate(string).safe_substitute(dictionary)
 
 
-def get(mp3, format):
-    """Print the song informations according to the specified format."""
-    print _format(format, mp3).strip()
+def get(mp3s, format):
+    """Print the songs informations according to the specified format."""
+    for mp3 in mp3s:
+        print _format(format, mp3).strip()
 
 
 def _unicode(dictionary):
@@ -146,26 +151,28 @@ def _filter_tags(dictionary):
                 if name in tag_names and value is not None)
 
 
-def set(mp3, args):
-    """Tag mp3 using arguments from argparse."""
-    _save(mp3, _filter_tags(args.__dict__))
+def set(mp3s, args):
+    """Tag mp3s using arguments from argparse."""
+    for mp3 in mp3s:
+        _save(mp3, _filter_tags(args.__dict__))
 
 
-def rename(mp3, format):
-    """Rename mp3 according to format."""
-    dest = _format(format, mp3)
+def rename(mp3s, format):
+    """Rename mp3s according to format."""
+    for mp3 in mp3s:
+        dest = _format(format, mp3)
 
-    # create missing directories
-    try:
-        makedirs(dirname(dest))
-    except OSError:
-        pass
+        # create missing directories
+        try:
+            makedirs(dirname(dest))
+        except OSError:
+            pass
 
-    if (exists(dest)):
-        print "%s already exists! Skipping..." % dest
-        return
-    else:
-        move(mp3.filename, dest)
+        if (exists(dest)):
+            print "%s already exists! Skipping..." % dest
+            return
+        else:
+            move(mp3.filename, dest)
 
 
 def _get_regex_for_tag(m):
@@ -231,23 +238,25 @@ def _extract(string, format):
     return search(regex, string).groupdict()
 
 
-def extract(mp3, format, humanize=False):
-    """Tag mp3 extracting tag values from its filename according to format.
+def extract(mp3s, format, humanize=False):
+    """Tag mp3s extracting tag values from its filename according to format.
 
     If humanize is True, humanize tags before tagging.
     """
-    tags = _extract(mp3.filename, format)
+    for mp3 in mp3s:
+        tags = _extract(mp3.filename, format)
 
-    # humanize
-    if humanize:
-        tags = _humanize_tags(tags)
+        # humanize
+        if humanize:
+            tags = _humanize_tags(tags)
 
-    _save(mp3, tags)
+        _save(mp3, tags)
 
 
-def humanize(mp3):
+def humanize(mp3s):
     """Humanize tags in mp3."""
-    _save(mp3, _humanize_tags(tags))
+    for mp3 in mp3s:
+        _save(mp3, _humanize_tags(tags))
 
 
 if __name__ == '__main__':
