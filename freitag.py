@@ -19,8 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys
 import argparse
+from sys import exit
 from string import replace, Template, capwords
 from shutil import move
 from os import makedirs, sep
@@ -261,4 +261,4 @@ def humanize(mp3s):
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    exit(main())
