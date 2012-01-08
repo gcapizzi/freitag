@@ -43,11 +43,13 @@ TAGS = [
 
 
 class FormatTemplate(Template):
+    """Custom `string.Template` subclass used in `_format`."""
     delimiter = TAG_DELIMITER
     idpattern = TAG_IDPATTERN
 
 
 class FreiMP3(EasyMP3):
+    """Custom, simplified `mutagen.mp3.EasyMP3` subclass."""
     def __getitem__(self, key):
         value = ''
 
@@ -178,7 +180,7 @@ def rename(mp3s, format):
 def _get_regex_for_tag(m):
     """Take a match object and return a regex with a properly named group.
 
-    This function is made to be used as replacement function in a re.sub() call.
+    This function is made to be used as replacement function in a `re.sub` call.
     """
     tag_name = m.group(1)
     tag_regex = '[^%s]*' % sep
@@ -254,7 +256,7 @@ def extract(mp3s, format, humanize=False):
 
 
 def humanize(mp3s):
-    """Humanize tags in mp3."""
+    """Humanize tags in mp3s."""
     for mp3 in mp3s:
         _save(mp3, _humanize_tags(tags))
 
