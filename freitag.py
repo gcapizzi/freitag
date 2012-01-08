@@ -21,11 +21,11 @@
 
 import argparse
 from sys import exit
-from string import replace, Template, capwords
+from string import Template, capwords
 from shutil import move
 from os import makedirs, sep
-from os.path import dirname, join, exists
-from re import sub, escape, search
+from os.path import dirname, exists
+from re import sub, search
 
 from mutagen.mp3 import EasyMP3
 
