@@ -21,11 +21,7 @@
 
 import argparse
 from sys import exit
-from string import Template, capwords
-from shutil import move
-from os import makedirs, sep
-from os.path import dirname, exists
-from re import sub, search
+from string import Template
 
 from mutagen.mp3 import EasyMP3
 
@@ -160,6 +156,10 @@ def set(mp3s, args):
 
 def rename(mp3s, format):
     """Rename mp3s according to format."""
+    from os import makedirs
+    from os.path import dirname, exists
+    from shutil import move
+
     for mp3 in mp3s:
         dest = _format(format, mp3)
 
@@ -181,6 +181,8 @@ def _get_regex_for_tag(m):
 
     This function is made to be used as replacement function in a `re.sub` call.
     """
+    from os import sep
+
     tag_name = m.group(1)
     tag_regex = '[^%s]*' % sep
 
@@ -198,6 +200,8 @@ def _humanize(string):
     >>> _humanize('bob_marley_-_one_love')
     'Bob Marley - One Love'
     """
+    from string import capwords
+
     return capwords(string.replace('_', ' '))
 
 
@@ -229,6 +233,8 @@ def _extract(string, format):
     >>> extracted == expected
     True
     """
+    from re import sub, search
+
     # the regex pattern that matches tags in the format string
     tag_pattern = '{delimiter}({pattern})'.format(delimiter=TAG_DELIMITER,
                                                   pattern=TAG_IDPATTERN)
