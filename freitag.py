@@ -113,7 +113,7 @@ def _format(string, dictionary):
 
 
 def get(mp3, format):
-    """Print the song informations according to the specified formats."""
+    """Print the song informations according to the specified format."""
     print _format(format, mp3).strip()
 
 
