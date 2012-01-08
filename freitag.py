@@ -209,19 +209,19 @@ def _humanize_tags(tags):
 
 
 def _extract(string, format):
-    # we need a FormatTemplate instance to get delimiter and idpattern
-    t = FormatTemplate('')
-    delimiter = t.delimiter
-    idpattern = t.idpattern
+    """Extracts values from a string according to the specified format.
 
+    >>> extracted = _extract('Bob Marley - One Love', '%artist - %title')
+    >>> expected = {'artist': 'Bob Marley', 'title': 'One Love'}
+    >>> extracted == expected
+    True
+    """
     # the regex pattern that matches tags in the format string
-    # (delimiter must be escaped twice to be successfully substistuted in the
-    # next step)
-    tag_pattern = '%(del)s(%(pattern)s)' % {'del': escape(escape(delimiter)),
-                                            'pattern': idpattern}
+    tag_pattern = '{delimiter}({pattern})'.format(delimiter=TAG_DELIMITER,
+                                                  pattern=TAG_IDPATTERN)
 
     # turn the format string into a regex and parse the filename
-    regex = sub(tag_pattern, _get_regex_for_tag, escape(format))
+    regex = sub(tag_pattern, _get_regex_for_tag, format)
 
     return search(regex, string).groupdict()
 
