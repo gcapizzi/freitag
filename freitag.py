@@ -263,7 +263,7 @@ def extract(mp3s, format, humanize=False):
 def humanize(mp3s):
     """Humanize album, artist and title tags in mp3s."""
     for mp3 in mp3s:
-        _save(mp3, _humanize_tags(tags))
+        _save(mp3, _humanize_tags(mp3))
 
 
 if __name__ == '__main__':
