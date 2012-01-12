@@ -85,7 +85,7 @@ def main():
 
     args = parser.parse_args()
 
-    mp3s = _mp3s(args.files)
+    mp3s = [FreiMP3(file) for file in args.files]
 
     if args.command == 'get':
         get(mp3s, args.format)
@@ -97,11 +97,6 @@ def main():
         extract(mp3s, args.format, args.humanize)
     elif args.command == 'humanize':
         humanize(mp3s)
-
-
-def _mp3s(files):
-    """Return a list of `FreiMP3` instances from a list of files."""
-    return [FreiMP3(file) for file in files]
 
 
 def _format(string, dictionary):
