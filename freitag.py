@@ -31,7 +31,9 @@ from mutagen.mp3 import EasyMP3
 
 
 class FormatTemplate(Template):
+
     """A custom Template subclass used for tag extraction."""
+
     delimiter = '%'
     idpattern = '[a-z]+'
 
