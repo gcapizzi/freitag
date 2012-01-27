@@ -60,7 +60,6 @@ class TestSequenceFunctions(unittest.TestCase):
         self.song.save()
 
         self.mp3.save.assert_called_with()
-        self.assertEqual(self.song.filename, self.song.prev_filename)
 
     def test_format(self):
         format = '%artist - %title'
