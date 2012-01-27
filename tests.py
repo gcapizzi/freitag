@@ -26,7 +26,7 @@ from mutagen.mp3 import EasyMP3
 
 from mock import Mock
 
-class TestSequenceFunctions(unittest.TestCase):
+class TestFreiSong(unittest.TestCase):
 
     def setUp(self):
         _tags = {'tracknumber': ['1/2'], 'title': ['One Love'],
