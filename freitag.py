@@ -30,12 +30,16 @@ from re import sub, search
 from mutagen.mp3 import EasyMP3
 
 
+class FormatTemplate(Template):
+    """A custom Template subclass used for tag extraction."""
+    delimiter = '%'
+    idpattern = '[a-z]+'
+
+
 class FreiSong:
 
     """The main FreiTag class, representing a song."""
 
-    TAG_DELIMITER = '%'
-    TAG_IDPATTERN = '[a-z]+'
     DEFAULT_FORMAT = "%tracknumber - %artist - %title.mp3"
     TAGS = {
         'album':       {'abbr': 'b', 'help': 'The album name'},
@@ -98,10 +102,6 @@ class FreiSong:
         format.
 
         """
-        class FormatTemplate(Template):
-            delimiter = self.TAG_DELIMITER
-            idpattern = self.TAG_IDPATTERN
-
         return FormatTemplate(format).safe_substitute(self).strip()
 
     def rename(self, format):
@@ -112,7 +112,8 @@ class FreiSong:
         """Extracts values from a string according to the specified format."""
         # the regex pattern that matches tags in the format string
         tag_pattern = '{delimiter}({pattern})'.format(
-                delimiter=self.TAG_DELIMITER, pattern=self.TAG_IDPATTERN)
+                delimiter=FormatTemplate.delimiter,
+                pattern=FormatTemplate.idpattern)
 
         def _get_regex_for_tag(m):
             """Take a match object and return a regex with a properly named
