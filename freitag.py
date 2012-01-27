@@ -56,7 +56,7 @@ class FreiSong:
 
         try:
             value = self.mp3[key]
-            # mutagen tags can be arrays
+            # mutagen tags can be lists
             if isinstance(value, list):
                 value = value[0]
 
@@ -90,11 +90,14 @@ class FreiSong:
             move(self.prev_filename, self.filename)
             self.prev_filename = self.filename
 
-        # set mp3 name accordingly
+        # update mp3 filename accordingly
         self.mp3.filename = self.filename
 
     def format(self, format):
-        """Substitute tags in the %tag form with values from dictionary."""
+        """Return a string representation of the song according to the specified
+        format.
+
+        """
         class FormatTemplate(Template):
             delimiter = self.TAG_DELIMITER
             idpattern = self.TAG_IDPATTERN
@@ -102,7 +105,7 @@ class FreiSong:
         return FormatTemplate(format).safe_substitute(self).strip()
 
     def rename(self, format):
-        """Rename song according to format."""
+        """Rename song according to the specified format."""
         self.filename = self.format(format)
 
     def extract(self, format):
