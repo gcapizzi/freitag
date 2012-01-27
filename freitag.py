@@ -198,6 +198,7 @@ def rename(songs, format):
     """Rename songs according to format."""
     for song in songs:
         song.rename(format)
+        song.save()
 
 
 def extract(songs, format, humanize=False):
