@@ -149,7 +149,8 @@ def main():
                         help='The format used by "get", "rename" and '
                         + '"extract" commands. You can use the following '
                         + 'placeholders: '
-                        + ', '.join(['%%{0}'.format(t) for t in FreiSong.TAGS]))
+                        + ', '.join(['%%{0}'.format(t)
+                                     for t in FreiSong.TAGS]))
     parser.add_argument('--humanize', action="store_true", default=False,
                         help='When extracting, convert all fields from '
                         + 'lowecase_with_underscores format to Capitalized '
@@ -199,6 +200,7 @@ def extract(songs, format, humanize=False):
     """Tag songs extracting tag values from its filename according to format.
 
     If humanize is True, humanize tags before tagging.
+
     """
     for song in songs:
         song.extract(format)
