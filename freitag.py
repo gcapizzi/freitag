@@ -90,6 +90,9 @@ class FreiSong:
             move(self.prev_filename, self.filename)
             self.prev_filename = self.filename
 
+        # set mp3 name accordingly
+        self.mp3.filename = self.filename
+
     def format(self, format):
         """Substitute tags in the %tag form with values from dictionary."""
         class FormatTemplate(Template):
