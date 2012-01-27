@@ -187,7 +187,8 @@ def get(songs, format):
 def set(songs, args):
     """Tag songs using arguments from argparse."""
     for song in songs:
-        song.save(args.__dict__)
+        song.update(args.__dict__)
+        song.save()
 
 
 def rename(songs, format):
