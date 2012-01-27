@@ -35,10 +35,13 @@ class TestSequenceFunctions(unittest.TestCase):
             return _tags[name]
         def setitem(name, val):
             _tags[name] = val
+        def contains(key):
+            return key in _tags
 
         self.mp3 = Mock()
-        self.mp3.__getitem__ = Mock(side_effect=getitem)
-        self.mp3.__setitem__ = Mock(side_effect=setitem)
+        self.mp3.__getitem__  = Mock(side_effect=getitem)
+        self.mp3.__setitem__  = Mock(side_effect=setitem)
+        self.mp3.__contains__ = Mock(side_effect=contains)
         self.mp3.filename = 'Bob Marley - One Love.mp3'
 
         self.song = FreiSong(self.mp3)

@@ -136,8 +136,8 @@ class FreiSong:
         tags_to_humanize = ['album', 'artist', 'title']
 
         for tag in tags_to_humanize:
-            if self.mp3.has_key(tag):
-                self.mp3[tag] = capwords(self.mp3[tag].replace('_', ' '))
+            if tag in self.mp3:
+                self[tag] = capwords(self[tag].replace('_', ' '))
 
 
 def main():
