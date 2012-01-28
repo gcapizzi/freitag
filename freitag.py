@@ -172,6 +172,16 @@ def main():
 
     songs = [FreiSong(EasyMP3(file)) for file in args.files]
 
+    # If not calling the 'get' command, try to import clint.
+    # If clint is imported successfully, use it to print a progress bar.
+    if args.command != 'get':
+        try:
+            from clint.textui import progress
+        except ImportError:
+            pass
+        else:
+            songs = progress.bar(songs)
+
     if args.command == 'get':
         get(songs, args.format)
     elif args.command == 'set':
