@@ -66,7 +66,7 @@ class FreiSong:
             # remove the slash and everything after it in track number
             # and zero-pad it
             if key == 'tracknumber':
-                value = value.split('/')[0].rjust(2, '0')
+                value = self._fix_tracknumber(value)
 
         return value
 
@@ -75,19 +75,25 @@ class FreiSong:
             return single_or_list[0]
         return single_or_list
 
+    def _fix_tracknumber(self, tracknumber):
+        return tracknumber.split('/')[0].rjust(2, '0')
+
     def __setitem__(self, key, value):
         self.mp3[key] = value
 
     def update(self, tags):
         """Update song with tags."""
         tags = self._filter_tags(tags)
-        # convert everything to unicode
-        tags = dict((name, unicode(value)) for (name, value) in tags.items())
+
+        tags = self._unicode_tags(tags)
         self.mp3.update(tags)
 
     def _filter_tags(self, tags):
         return dict((name, value) for name, value in tags.items()
                     if name in self.TAGS and value is not None)
+
+    def _unicode_tags(self, tags):
+        return dict((name, unicode(value)) for (name, value) in tags.items())
 
     def save(self):
         """Save the song."""
