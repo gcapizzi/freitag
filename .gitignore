@@ -2,3 +2,4 @@ TODO.txt
 *.swp
 *.pyc
 .DS_Store
+virtualenv
