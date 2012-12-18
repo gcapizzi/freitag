@@ -80,12 +80,14 @@ class FreiSong:
 
     def update(self, tags):
         """Update song with tags."""
-        # ignore unsupported tags
-        tags = dict((name, value) for name, value in tags.items()
-                if name in self.TAGS and value is not None)
+        tags = self._filter_tags(tags)
         # convert everything to unicode
         tags = dict((name, unicode(value)) for (name, value) in tags.items())
         self.mp3.update(tags)
+
+    def _filter_tags(self, tags):
+        return dict((name, value) for name, value in tags.items()
+                    if name in self.TAGS and value is not None)
 
     def save(self):
         """Save the song."""
