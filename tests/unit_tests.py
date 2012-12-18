@@ -25,7 +25,7 @@ from freitag import FreiSong
 
 from mutagen.mp3 import EasyMP3
 
-from mock import Mock
+from exam.mock import Mock
 
 class TestFreiSong(unittest.TestCase):
 
@@ -48,10 +48,16 @@ class TestFreiSong(unittest.TestCase):
         self.song = FreiSong(self.mp3)
 
     def test_getitem(self):
-        self.assertEqual('01',         self.song['tracknumber'])
-        self.assertEqual('One Love',   self.song['title'])
-        self.assertEqual('Bob Marley', self.song['artist'])
-        self.assertEqual('Exodus',     self.song['album'])
+        self.assertEqual('01', self.song['tracknumber'])
+        self.mp3.__getitem__.assert_called_with('tracknumber')
+
+        self.assertEqual('', self.song['foo'])
+        self.mp3.__getitem__.assert_not_called_with('foo')
+
+    def test_setitem(self):
+        self.song['title'] = 'Here I Come'
+
+        self.mp3.__setitem__.assert_called_with('title', 'Here I Come')
 
     def test_update(self):
         self.song.update({'artist': 'Dennis Brown', 'title': 'Here I Come',

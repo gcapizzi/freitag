@@ -60,7 +60,7 @@ class FreiSong:
     def __getitem__(self, key):
         value = ''
 
-        try:
+        if key in self.mp3:
             value = self.mp3[key]
             # mutagen tags can be lists
             if isinstance(value, list):
@@ -70,8 +70,6 @@ class FreiSong:
             # and zero-pad it
             if key == 'tracknumber':
                 value = value.split('/')[0].rjust(2, '0')
-        except KeyError:
-            pass
 
         return value
 
