@@ -84,7 +84,6 @@ class FreiSong:
     def update(self, tags):
         """Update song with tags."""
         tags = self._filter_tags(tags)
-
         tags = self._unicode_tags(tags)
         self.mp3.update(tags)
 
