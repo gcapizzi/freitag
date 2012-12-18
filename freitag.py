@@ -61,10 +61,7 @@ class FreiSong:
         value = ''
 
         if key in self.mp3:
-            value = self.mp3[key]
-            # mutagen tags can be lists
-            if isinstance(value, list):
-                value = value[0]
+            value = self._first(self.mp3[key])
 
             # remove the slash and everything after it in track number
             # and zero-pad it
@@ -72,6 +69,11 @@ class FreiSong:
                 value = value.split('/')[0].rjust(2, '0')
 
         return value
+
+    def _first(self, single_or_list):
+        if isinstance(single_or_list, list):
+            return single_or_list[0]
+        return single_or_list
 
     def __setitem__(self, key, value):
         self.mp3[key] = value

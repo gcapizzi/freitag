@@ -48,6 +48,9 @@ class TestFreiSong(unittest.TestCase):
         self.song = FreiSong(self.mp3)
 
     def test_getitem(self):
+        self.assertEqual('Bob Marley', self.song['artist'])
+        self.mp3.__getitem__.assert_called_with('artist')
+
         self.assertEqual('01', self.song['tracknumber'])
         self.mp3.__getitem__.assert_called_with('tracknumber')
 
