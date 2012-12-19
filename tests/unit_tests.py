@@ -32,6 +32,10 @@ class TestFreiSong(unittest.TestCase):
     def setUp(self):
         _tags = {'tracknumber': ['1/2'], 'title': ['One Love'],
                  'artist': ['Bob Marley'], 'album': ['Exodus']}
+
+        self._filename = 'Bob Marley - One Love.mp3'
+        self._new_filename = 'Dennis Brown - Here I Come.mp3'
+
         def getitem(name):
             return _tags[name]
         def setitem(name, val):
@@ -43,7 +47,7 @@ class TestFreiSong(unittest.TestCase):
         self.mp3.__getitem__  = Mock(side_effect=getitem)
         self.mp3.__setitem__  = Mock(side_effect=setitem)
         self.mp3.__contains__ = Mock(side_effect=contains)
-        self.mp3.filename = 'Bob Marley - One Love.mp3'
+        self.mp3.filename = self._filename
 
         self.filesystem = Mock()
 
@@ -72,13 +76,12 @@ class TestFreiSong(unittest.TestCase):
                                             'title': 'Here I Come'})
 
     def test_save(self):
-        self.song.filename = 'Here I Come - Dennis Brown.mp3'
+        self.song.filename = self._new_filename
         self.song.save()
 
         self.mp3.save.assert_called_with()
-        self.assertEquals('Here I Come - Dennis Brown.mp3', self.mp3.filename)
-        self.filesystem.rename.assert_called_with('Bob Marley - One Love.mp3',
-                                                  'Here I Come - Dennis Brown.mp3')
+        self.assertEquals(self._new_filename, self.mp3.filename)
+        self.filesystem.rename.assert_called_with(self._filename, self._new_filename)
 
     def test_format(self):
         format = '%artist - %title'
@@ -93,7 +96,7 @@ class TestFreiSong(unittest.TestCase):
 
     def test_extract(self):
         format = '%artist - %title.mp3'
-        self.song.filename = 'Dennis Brown - Here I Come.mp3'
+        self.song.filename = self._new_filename
         self.song.extract(format)
 
         self.mp3.update.assert_called_with({'artist': 'Dennis Brown',
