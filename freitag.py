@@ -30,7 +30,7 @@ from re import sub, search
 from mutagen.mp3 import EasyMP3
 
 
-class FormatTemplate(Template):
+class FreiTemplate(Template):
 
     """A custom Template subclass used for tag extraction."""
 
@@ -57,11 +57,12 @@ class FreiSong:
         'date':        {'abbr': 'y', 'help': 'The track date (year)'}
     }
 
-    def __init__(self, mp3, filesystem=FileSystem()):
+    def __init__(self, mp3, filesystem=FileSystem(), template=FreiTemplate(DEFAULT_FORMAT)):
         self.mp3 = mp3
         self.prev_filename = mp3.filename
         self.filename = mp3.filename
         self.filesystem = filesystem
+        self.template = template
 
     def __getitem__(self, key):
         value = ''
@@ -112,23 +113,23 @@ class FreiSong:
 
         self.mp3.filename = self.filename
 
-    def format(self, format):
+    def format(self):
         """Return a string representation of the song according to the specified
         format.
 
         """
-        return FormatTemplate(format).safe_substitute(self).strip()
+        return self.template.safe_substitute(self).strip()
 
-    def rename(self, format):
+    def rename(self):
         """Rename song according to the specified format."""
-        self.filename = self.format(format)
+        self.filename = self.format()
 
-    def extract(self, format):
+    def extract(self):
         """Extracts values from a string according to the specified format."""
         # the regex pattern that matches tags in the format string
-        tag_pattern = '{delimiter}({pattern})'.format(
-                delimiter=FormatTemplate.delimiter,
-                pattern=FormatTemplate.idpattern)
+        format_opts = { 'delimiter': self.template.delimiter,
+                        'pattern': self.template.idpattern }
+        tag_pattern = '{delimiter}({pattern})'.format(**format_opts)
 
         def _get_regex_for_tag(m):
             """Take a match object and return a regex with a properly named
@@ -146,7 +147,7 @@ class FreiSong:
                                                         tag_regex=tag_regex)
 
         # turn the format string into a regex and parse the filename
-        regex = sub(tag_pattern, _get_regex_for_tag, format)
+        regex = sub(tag_pattern, _get_regex_for_tag, self.template.template)
 
         self.update(search(regex, self.filename).groupdict())
 
@@ -156,7 +157,10 @@ class FreiSong:
 
         for tag in tags_to_humanize:
             if tag in self.mp3:
-                self[tag] = capwords(self[tag].replace('_', ' '))
+                self[tag] = self._humanize(self[tag])
+
+    def _humanize(self, string):
+        return capwords(string.replace('_', ' '))
 
 
 def main():

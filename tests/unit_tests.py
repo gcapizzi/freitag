@@ -21,7 +21,7 @@
 import unittest
 from nose.tools import *
 
-from freitag import FreiSong
+from freitag import FreiSong, FreiTemplate
 
 from mutagen.mp3 import EasyMP3
 
@@ -33,7 +33,8 @@ class TestFreiSong(unittest.TestCase):
         _tags = {'tracknumber': ['1/2'], 'title': ['One Love'],
                  'artist': ['Bob Marley'], 'album': ['Exodus']}
 
-        self._filename = 'Bob Marley - One Love.mp3'
+        self._song_name = 'Bob Marley - One Love'
+        self._filename = self._song_name + '.mp3'
         self._new_filename = 'Dennis Brown - Here I Come.mp3'
 
         def getitem(name):
@@ -51,7 +52,13 @@ class TestFreiSong(unittest.TestCase):
 
         self.filesystem = Mock()
 
-        self.song = FreiSong(self.mp3, self.filesystem)
+        self.template = Mock()
+        self.template.template = FreiSong.DEFAULT_FORMAT
+        self.template.idpattern = FreiTemplate.idpattern
+        self.template.delimiter = FreiTemplate.delimiter
+        self.template.safe_substitute.return_value = self._song_name + '   '
+
+        self.song = FreiSong(self.mp3, filesystem=self.filesystem, template=self.template)
 
     def test_getitem(self):
         self.assertEqual('Bob Marley', self.song['artist'])
@@ -84,22 +91,20 @@ class TestFreiSong(unittest.TestCase):
         self.filesystem.rename.assert_called_with(self._filename, self._new_filename)
 
     def test_format(self):
-        format = '%artist - %title'
-
-        self.assertEqual('Bob Marley - One Love', self.song.format(format))
+        self.assertEquals(self._song_name, self.song.format())
+        self.template.safe_substitute.assert_called_with(self.song)
 
     def test_rename(self):
-        format = '%title - %artist.mp3'
-        self.song.rename(format)
-
-        self.assertEqual('One Love - Bob Marley.mp3', self.song.filename)
+        self.song.rename()
+        self.template.safe_substitute.assert_called_with(self.song)
+        self.assertEquals(self._song_name, self.song.filename)
 
     def test_extract(self):
-        format = '%artist - %title.mp3'
-        self.song.filename = self._new_filename
-        self.song.extract(format)
+        self.song.filename = '01 - Dennis Brown - Here I Come.mp3'
+        self.song.extract()
 
-        self.mp3.update.assert_called_with({'artist': 'Dennis Brown',
+        self.mp3.update.assert_called_with({'tracknumber': '01',
+                                            'artist': 'Dennis Brown',
                                             'title':  'Here I Come'})
 
     def test_humanize(self):
