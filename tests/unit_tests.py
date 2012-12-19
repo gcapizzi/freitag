@@ -45,7 +45,9 @@ class TestFreiSong(unittest.TestCase):
         self.mp3.__contains__ = Mock(side_effect=contains)
         self.mp3.filename = 'Bob Marley - One Love.mp3'
 
-        self.song = FreiSong(self.mp3)
+        self.filesystem = Mock()
+
+        self.song = FreiSong(self.mp3, self.filesystem)
 
     def test_getitem(self):
         self.assertEqual('Bob Marley', self.song['artist'])
@@ -70,9 +72,13 @@ class TestFreiSong(unittest.TestCase):
                                             'title': 'Here I Come'})
 
     def test_save(self):
+        self.song.filename = 'Here I Come - Dennis Brown.mp3'
         self.song.save()
 
         self.mp3.save.assert_called_with()
+        self.assertEquals('Here I Come - Dennis Brown.mp3', self.mp3.filename)
+        self.filesystem.rename.assert_called_with('Bob Marley - One Love.mp3',
+                                                  'Here I Come - Dennis Brown.mp3')
 
     def test_format(self):
         format = '%artist - %title'

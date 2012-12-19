@@ -38,6 +38,11 @@ class FormatTemplate(Template):
     idpattern = '[a-z]+'
 
 
+class FileSystem:
+    def rename(self, old_name, new_name):
+        move(old_name, new_name)
+
+
 class FreiSong:
 
     """The main FreiTag class, representing a song."""
@@ -52,10 +57,11 @@ class FreiSong:
         'date':        {'abbr': 'y', 'help': 'The track date (year)'}
     }
 
-    def __init__(self, mp3):
+    def __init__(self, mp3, filesystem=FileSystem()):
         self.mp3 = mp3
         self.prev_filename = mp3.filename
         self.filename = mp3.filename
+        self.filesystem = filesystem
 
     def __getitem__(self, key):
         value = ''
@@ -97,13 +103,13 @@ class FreiSong:
     def save(self):
         """Save the song."""
         self.mp3.save()
+        self._rename()
 
-        # rename if necessary
+    def _rename(self):
         if self.filename != self.prev_filename and not exists(self.filename):
-            move(self.prev_filename, self.filename)
+            self.filesystem.rename(self.prev_filename, self.filename)
             self.prev_filename = self.filename
 
-        # update mp3 filename accordingly
         self.mp3.filename = self.filename
 
     def format(self, format):
