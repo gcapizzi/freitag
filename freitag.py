@@ -126,11 +126,11 @@ class FreiSong:
 
     def extract(self):
         """Extracts values from a string according to the specified format."""
-        # turn the format string into a regex and parse the filename
-        regex = self._format_to_regex(self.template.template)
-        tags = search(regex, self.filename).groupdict()
+        self.update(self._extract_tags(self.filename, self.template.template))
 
-        self.update(tags)
+    def _extract_tags(self, filename, format):
+        regex = self._format_to_regex(format)
+        return search(regex, filename).groupdict()
 
     def _format_to_regex(self, format):
         # the regex pattern that matches tags in the format string
