@@ -126,6 +126,13 @@ class FreiSong:
 
     def extract(self):
         """Extracts values from a string according to the specified format."""
+        # turn the format string into a regex and parse the filename
+        regex = self._format_to_regex(self.template.template)
+        tags = search(regex, self.filename).groupdict()
+
+        self.update(tags)
+
+    def _format_to_regex(self, format):
         # the regex pattern that matches tags in the format string
         format_opts = { 'delimiter': self.template.delimiter,
                         'pattern': self.template.idpattern }
@@ -146,10 +153,7 @@ class FreiSong:
             return '(?P<{tag_name}>{tag_regex})'.format(tag_name=tag_name,
                                                         tag_regex=tag_regex)
 
-        # turn the format string into a regex and parse the filename
-        regex = sub(tag_pattern, _get_regex_for_tag, self.template.template)
-
-        self.update(search(regex, self.filename).groupdict())
+        return sub(tag_pattern, _get_regex_for_tag, format)
 
     def humanize(self):
         """Humanize album, title and artist tags from tags dictionary."""
