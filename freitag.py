@@ -126,7 +126,8 @@ class FreiSong:
 
     def extract(self):
         """Extracts values from a string according to the specified format."""
-        self.update(self._extract_tags(self.filename, self.template.template))
+        tags = self._extract_tags(self.filename, self.template.template)
+        self.update(tags)
 
     def _extract_tags(self, filename, format):
         regex = self._format_to_regex(format)
@@ -161,9 +162,9 @@ class FreiSong:
 
         for tag in tags_to_humanize:
             if tag in self.mp3:
-                self[tag] = self._humanize(self[tag])
+                self[tag] = self._humanize_tag(self[tag])
 
-    def _humanize(self, string):
+    def _humanize_tag(self, string):
         return capwords(string.replace('_', ' '))
 
 
