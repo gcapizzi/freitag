@@ -192,7 +192,8 @@ def main():
 
     args = parser.parse_args()
 
-    songs = [FreiSong(EasyMP3(file)) for file in args.files]
+    songs = [FreiSong(EasyMP3(file), template=FreiTemplate(args.format))
+             for file in args.files]
 
     # If not calling the 'get' command, try to import clint.
     # If clint is imported successfully, use it to print a progress bar.
@@ -209,7 +210,7 @@ def main():
     elif args.command == 'set':
         set(songs, args)
     elif args.command == 'rename':
-        rename(songs, args.format)
+        rename(songs)
     elif args.command == 'extract':
         extract(songs, args.format, args.humanize)
     elif args.command == 'humanize':
@@ -219,7 +220,7 @@ def main():
 def get(songs, format):
     """Print the songs informations according to the specified format."""
     for song in songs:
-        print song.format(format)
+        print song.format()
 
 
 def set(songs, args):
@@ -229,10 +230,10 @@ def set(songs, args):
         song.save()
 
 
-def rename(songs, format):
+def rename(songs):
     """Rename songs according to format."""
     for song in songs:
-        song.rename(format)
+        song.rename()
         song.save()
 
 
