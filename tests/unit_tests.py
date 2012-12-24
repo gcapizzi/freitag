@@ -91,7 +91,8 @@ class TestFreiSong(unittest.TestCase):
 
         self.mp3.save.assert_called_with()
         self.assertEquals(self._new_filename, self.mp3.filename)
-        self.filesystem.rename.assert_called_with(self._filename, self._new_filename)
+        self.filesystem.rename.assert_called_with(self._filename,
+                                                  self._new_filename)
 
     def test_format(self):
         self.assertEquals(self._song_name, self.song.format())
