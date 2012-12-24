@@ -1,3 +1,4 @@
+exam==0.5.2
 mock==1.0.1
 mutagen==1.20
 nose==1.2.1
