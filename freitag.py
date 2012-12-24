@@ -57,7 +57,8 @@ class FreiSong:
         'date':        {'abbr': 'y', 'help': 'The track date (year)'}
     }
 
-    def __init__(self, mp3, filesystem=FileSystem(), template=FreiTemplate(DEFAULT_FORMAT)):
+    def __init__(self, mp3, filesystem=FileSystem(),
+                 template=FreiTemplate(DEFAULT_FORMAT)):
         self.mp3 = mp3
         self.prev_filename = mp3.filename
         self.filename = mp3.filename
