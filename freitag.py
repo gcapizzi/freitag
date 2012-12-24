@@ -87,7 +87,8 @@ class FreiSong:
         return tracknumber.split('/')[0].rjust(2, '0')
 
     def __setitem__(self, key, value):
-        self.mp3[key] = value
+        if key in self.mp3:
+            self.mp3[key] = value
 
     def update(self, tags):
         """Update song with tags."""

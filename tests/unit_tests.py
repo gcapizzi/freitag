@@ -73,8 +73,10 @@ class TestFreiSong(unittest.TestCase):
 
     def test_setitem(self):
         self.song['title'] = 'Here I Come'
-
         self.mp3.__setitem__.assert_called_with('title', 'Here I Come')
+
+        self.song['foo'] = 'bar'
+        self.mp3.__setitem__.assert_not_called_with('foo', 'bar')
 
     def test_update(self):
         self.song.update({'artist': 'Dennis Brown', 'title': 'Here I Come',
