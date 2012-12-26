@@ -219,7 +219,7 @@ def main():
         humanize(songs)
 
 
-def get(songs, format):
+def get(songs):
     """Print the songs informations according to the specified format."""
     for song in songs:
         print song.format()
