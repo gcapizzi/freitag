@@ -181,10 +181,6 @@ def main():
                         + 'placeholders: '
                         + ', '.join(['%%{0}'.format(t)
                                      for t in FreiSong.TAGS]))
-    parser.add_argument('--humanize', action="store_true", default=False,
-                        help='When extracting, convert all fields from '
-                        + 'lowecase_with_underscores format to Capitalized '
-                        + 'With Spaces format')
 
     # tag setters
     for tag, props in FreiSong.TAGS.iteritems():
@@ -214,7 +210,7 @@ def main():
     elif args.command == 'rename':
         rename(songs)
     elif args.command == 'extract':
-        extract(songs, args.humanize)
+        extract(songs)
     elif args.command == 'humanize':
         humanize(songs)
 
@@ -239,19 +235,12 @@ def rename(songs):
         song.save()
 
 
-def extract(songs, humanize=False):
+def extract(songs):
     """Tag songs extracting tag values from its filename according to format.
-
-    If humanize is True, humanize tags before tagging.
 
     """
     for song in songs:
         song.extract()
-
-        # humanize
-        if humanize:
-            song.humanize()
-
         song.save()
 
 
