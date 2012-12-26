@@ -208,13 +208,13 @@ def main():
             songs = progress.bar(songs)
 
     if args.command == 'get':
-        get(songs, args.format)
+        get(songs)
     elif args.command == 'set':
         set(songs, args)
     elif args.command == 'rename':
         rename(songs)
     elif args.command == 'extract':
-        extract(songs, args.format, args.humanize)
+        extract(songs, args.humanize)
     elif args.command == 'humanize':
         humanize(songs)
 
@@ -239,14 +239,14 @@ def rename(songs):
         song.save()
 
 
-def extract(songs, format, humanize=False):
+def extract(songs, humanize=False):
     """Tag songs extracting tag values from its filename according to format.
 
     If humanize is True, humanize tags before tagging.
 
     """
     for song in songs:
-        song.extract(format)
+        song.extract()
 
         # humanize
         if humanize:
