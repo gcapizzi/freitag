@@ -94,6 +94,10 @@ class TestFreiSong(unittest.TestCase):
         self.filesystem.rename.assert_called_with(self._filename,
                                                   self._new_filename)
 
+        self.song.save()
+        self.filesystem.rename.assert_not_called_with(self._new_filename,
+                                                      self._new_filename)
+
     def test_format(self):
         self.assertEquals(self._song_name, self.song.format())
         self.template.safe_substitute.assert_called_with(self.song)
