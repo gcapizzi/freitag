@@ -19,8 +19,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import argparse
-from sys import exit
 from string import Template, capwords
 from os import makedirs, sep
 from os.path import dirname, exists
@@ -168,88 +166,3 @@ class FreiSong:
 
     def _humanize_tag(self, string):
         return capwords(string.replace('_', ' '))
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=['get', 'set', 'rename',
-                                            'extract', 'humanize'])
-    parser.add_argument('files', nargs='+')
-    parser.add_argument('--format', '-f', default=FreiSong.DEFAULT_FORMAT,
-                        help='The format used by "get", "rename" and '
-                        + '"extract" commands. You can use the following '
-                        + 'placeholders: '
-                        + ', '.join(['%%{0}'.format(t)
-                                     for t in FreiSong.TAGS]))
-
-    # tag setters
-    for tag, props in FreiSong.TAGS.iteritems():
-        long_opt = '--%s' % tag
-        short_opt = '-%s' % props['abbr']
-        parser.add_argument(long_opt, short_opt, help=props['help'])
-
-    args = parser.parse_args()
-
-    songs = [FreiSong(EasyMP3(file), template=FreiTemplate(args.format))
-             for file in args.files]
-
-    # If not calling the 'get' command, try to import clint.
-    # If clint is imported successfully, use it to print a progress bar.
-    if args.command != 'get':
-        try:
-            from clint.textui import progress
-        except ImportError:
-            pass
-        else:
-            songs = progress.bar(songs)
-
-    if args.command == 'get':
-        get(songs)
-    elif args.command == 'set':
-        set(songs, args)
-    elif args.command == 'rename':
-        rename(songs)
-    elif args.command == 'extract':
-        extract(songs)
-    elif args.command == 'humanize':
-        humanize(songs)
-
-
-def get(songs):
-    """Print the songs informations according to the specified format."""
-    for song in songs:
-        print song.format()
-
-
-def set(songs, args):
-    """Tag songs using arguments from argparse."""
-    for song in songs:
-        song.update(args.__dict__)
-        song.save()
-
-
-def rename(songs):
-    """Rename songs according to format."""
-    for song in songs:
-        song.rename()
-        song.save()
-
-
-def extract(songs):
-    """Tag songs extracting tag values from its filename according to format.
-
-    """
-    for song in songs:
-        song.extract()
-        song.save()
-
-
-def humanize(songs):
-    """Humanize album, artist and title tags in songs."""
-    for song in songs:
-        song.humanize()
-        song.save()
-
-
-if __name__ == '__main__':
-    exit(main())
