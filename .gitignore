@@ -3,3 +3,4 @@ TODO.txt
 *.pyc
 .DS_Store
 virtualenv
+*.egg-info
