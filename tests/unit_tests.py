@@ -26,7 +26,7 @@ from exam.mock import Mock
 
 from mutagen.mp3 import EasyMP3
 
-from freitag import FreiSong, FreiTemplate
+from freitag import FreiSong, FreiTemplate, DEFAULT_FORMAT
 
 
 class TestFreiSong(unittest.TestCase):
@@ -57,7 +57,7 @@ class TestFreiSong(unittest.TestCase):
         self.filesystem = Mock()
 
         self.template = Mock()
-        self.template.template = FreiSong.DEFAULT_FORMAT
+        self.template.template = DEFAULT_FORMAT
         self.template.idpattern = FreiTemplate.idpattern
         self.template.delimiter = FreiTemplate.delimiter
         self.template.safe_substitute.return_value = self._song_name + '   '

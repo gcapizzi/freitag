@@ -28,6 +28,17 @@ from re import sub, search
 from mutagen.mp3 import EasyMP3
 
 
+DEFAULT_FORMAT = "%tracknumber - %artist - %title.mp3"
+TAGS = {
+    'album':       {'abbr': 'b', 'help': 'The album name'},
+    'artist':      {'abbr': 'a', 'help': 'The artist name'},
+    'title':       {'abbr': 't', 'help': 'The track title'},
+    'discnumber':  {'abbr': 'd', 'help': 'The disc number'},
+    'tracknumber': {'abbr': 'n', 'help': 'The track number'},
+    'date':        {'abbr': 'y', 'help': 'The track date (year)'}
+}
+
+
 class FreiTemplate(Template):
 
     """A custom Template subclass used for tag extraction."""
@@ -44,16 +55,6 @@ class FileSystem:
 class FreiSong:
 
     """The main FreiTag class, representing a song."""
-
-    DEFAULT_FORMAT = "%tracknumber - %artist - %title.mp3"
-    TAGS = {
-        'album':       {'abbr': 'b', 'help': 'The album name'},
-        'artist':      {'abbr': 'a', 'help': 'The artist name'},
-        'title':       {'abbr': 't', 'help': 'The track title'},
-        'discnumber':  {'abbr': 'd', 'help': 'The disc number'},
-        'tracknumber': {'abbr': 'n', 'help': 'The track number'},
-        'date':        {'abbr': 'y', 'help': 'The track date (year)'}
-    }
 
     def __init__(self, mp3, filesystem=FileSystem(),
                  template=FreiTemplate(DEFAULT_FORMAT)):
@@ -96,7 +97,7 @@ class FreiSong:
 
     def _filter_tags(self, tags):
         return dict((name, value) for name, value in tags.items()
-                    if name in self.TAGS and value is not None)
+                    if name in TAGS and value is not None)
 
     def _unicode_tags(self, tags):
         return dict((name, unicode(value)) for (name, value) in tags.items())
