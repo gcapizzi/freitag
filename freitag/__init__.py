@@ -114,8 +114,8 @@ class FreiSong:
         self.mp3.filename = self.filename
 
     def format(self):
-        """Return a string representation of the song according to the specified
-        format.
+        """Return a string representation of the song according to the
+        specified format.
 
         """
         return self.template.safe_substitute(self).strip()
@@ -135,8 +135,8 @@ class FreiSong:
 
     def _format_to_regex(self, format):
         # the regex pattern that matches tags in the format string
-        format_opts = { 'delimiter': self.template.delimiter,
-                        'pattern': self.template.idpattern }
+        format_opts = {'delimiter': self.template.delimiter,
+                       'pattern': self.template.idpattern}
         tag_pattern = '{delimiter}({pattern})'.format(**format_opts)
 
         def _get_regex_for_tag(m):
