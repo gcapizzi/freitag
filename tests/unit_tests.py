@@ -18,14 +18,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import unittest
-from nose.tools import *
 
-from freitag import FreiSong, FreiTemplate
+import unittest
+
+from nose.tools import *
+from exam.mock import Mock
 
 from mutagen.mp3 import EasyMP3
 
-from exam.mock import Mock
+from freitag import FreiSong, FreiTemplate
+
 
 class TestFreiSong(unittest.TestCase):
 
@@ -39,14 +41,16 @@ class TestFreiSong(unittest.TestCase):
 
         def getitem(name):
             return _tags[name]
+
         def setitem(name, val):
             _tags[name] = val
+
         def contains(key):
             return key in _tags
 
         self.mp3 = Mock()
-        self.mp3.__getitem__  = Mock(side_effect=getitem)
-        self.mp3.__setitem__  = Mock(side_effect=setitem)
+        self.mp3.__getitem__ = Mock(side_effect=getitem)
+        self.mp3.__setitem__ = Mock(side_effect=setitem)
         self.mp3.__contains__ = Mock(side_effect=contains)
         self.mp3.filename = self._filename
 
@@ -116,9 +120,9 @@ class TestFreiSong(unittest.TestCase):
                                             'title':  'Here I Come'})
 
     def test_humanize(self):
-        self.song['title']  = 'One_love'
+        self.song['title'] = 'One_love'
         self.song['artist'] = 'bob marley'
-        self.song['album']  = 'EXODUS'
+        self.song['album'] = 'EXODUS'
         self.song.humanize()
 
         self.assertEqual('One Love',   self.song['title'])

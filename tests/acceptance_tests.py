@@ -18,15 +18,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 import unittest
-from nose.tools import *
 
 from subprocess import Popen, PIPE
 from shutil import copy
 from os import remove, rename
 from os.path import exists
 
-from time import sleep
+from nose.tools import *
+
 
 class AcceptanceTest(unittest.TestCase):
 
