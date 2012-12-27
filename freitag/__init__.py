@@ -20,8 +20,8 @@
 
 
 from string import Template, capwords
-from os import makedirs, sep
-from os.path import dirname, exists
+from os import sep
+from os.path import exists
 from shutil import move
 from re import sub, search
 
