@@ -46,6 +46,9 @@ class FreiTemplate(Template):
     delimiter = '%'
     idpattern = '[a-z]+'
 
+    def format(self, values):
+        return self.safe_substitute(values).strip()
+
 
 class FileSystem:
     def rename(self, old_name, new_name):
@@ -114,17 +117,6 @@ class FreiSong:
 
         self.mp3.filename = self.filename
 
-    def format(self):
-        """Return a string representation of the song according to the
-        specified format.
-
-        """
-        return self.template.safe_substitute(self).strip()
-
-    def rename(self):
-        """Rename song according to the specified format."""
-        self.filename = self.format()
-
     def extract(self):
         """Extracts values from a string according to the specified format."""
         tags = self._extract_tags(self.filename, self.template.template)
@@ -167,3 +159,21 @@ class FreiSong:
 
     def _humanize_tag(self, string):
         return capwords(string.replace('_', ' '))
+
+
+class Operation:
+    def apply(self, song):
+        raise NotImplementError
+
+
+class RenameOperation(Operation):
+
+    def __init__(self, template=FreiTemplate(DEFAULT_FORMAT)):
+        self.template = template
+
+    def _format(self, song):
+        return self.template.safe_substitute(song).strip()
+
+    def apply(self, song):
+        """Rename song according to the specified format."""
+        song.filename = self._format(song)

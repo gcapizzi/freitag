@@ -22,7 +22,8 @@
 import argparse
 from sys import exit
 
-from freitag import FreiSong, FreiTemplate, DEFAULT_FORMAT, TAGS
+from freitag import FreiSong, FreiTemplate, RenameOperation
+from freitag import DEFAULT_FORMAT, TAGS
 
 from mutagen.mp3 import EasyMP3
 
@@ -60,21 +61,22 @@ def main():
             songs = progress.bar(songs)
 
     if args.command == 'get':
-        get(songs)
+        get(songs, args.format)
     elif args.command == 'set':
         set(songs, args)
     elif args.command == 'rename':
-        rename(songs)
+        rename(songs, args.format)
     elif args.command == 'extract':
         extract(songs)
     elif args.command == 'humanize':
         humanize(songs)
 
 
-def get(songs):
+def get(songs, format):
     """Print the songs informations according to the specified format."""
+    template = FreiTemplate(format)
     for song in songs:
-        print song.format()
+        print template.format(song)
 
 
 def set(songs, args):
@@ -84,10 +86,11 @@ def set(songs, args):
         song.save()
 
 
-def rename(songs):
+def rename(songs, format):
     """Rename songs according to format."""
+    rename_operation = RenameOperation(template=FreiTemplate(format))
     for song in songs:
-        song.rename()
+        rename_operation.apply(song)
         song.save()
 
 

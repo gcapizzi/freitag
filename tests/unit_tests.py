@@ -26,7 +26,7 @@ from exam.mock import Mock
 
 from mutagen.mp3 import EasyMP3
 
-from freitag import FreiSong, FreiTemplate, DEFAULT_FORMAT
+from freitag import FreiSong, FreiTemplate, RenameOperation, DEFAULT_FORMAT
 
 
 class TestFreiSong(unittest.TestCase):
@@ -102,15 +102,6 @@ class TestFreiSong(unittest.TestCase):
         self.filesystem.rename.assert_not_called_with(self._new_filename,
                                                       self._new_filename)
 
-    def test_format(self):
-        self.assertEquals(self._song_name, self.song.format())
-        self.template.safe_substitute.assert_called_with(self.song)
-
-    def test_rename(self):
-        self.song.rename()
-        self.template.safe_substitute.assert_called_with(self.song)
-        self.assertEquals(self._song_name, self.song.filename)
-
     def test_extract(self):
         self.song.filename = '01 - Dennis Brown - Here I Come.mp3'
         self.song.extract()
@@ -128,6 +119,30 @@ class TestFreiSong(unittest.TestCase):
         self.assertEqual('One Love',   self.song['title'])
         self.assertEqual('Bob Marley', self.song['artist'])
         self.assertEqual('Exodus',     self.song['album'])
+
+
+class FreiTemplateTest(unittest.TestCase):
+
+    def test_format(self):
+        tags = {'artist': 'Bob Marley', 'title': 'One Love'}
+        template = FreiTemplate('   %artist - %title   ')
+        self.assertEquals('Bob Marley - One Love', template.format(tags))
+
+
+class RenameOperationTest(unittest.TestCase):
+
+    def setUp(self):
+        self.song = Mock()
+        self.template = Mock()
+        self.filename = ' a filename '
+        self.template.safe_substitute.return_value = self.filename
+        self.rename_operation = RenameOperation(self.template)
+
+    def test_apply(self):
+        self.rename_operation.apply(self.song)
+        self.template.safe_substitute.assert_called_with(self.song)
+        expected_filename = 'a filename'
+        self.assertEquals(expected_filename, self.song.filename)
 
 
 if __name__ == '__main__':
