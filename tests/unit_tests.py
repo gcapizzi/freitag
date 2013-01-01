@@ -22,12 +22,13 @@
 import unittest
 
 from nose.tools import *
-from exam.mock import Mock
+from exam.mock import Mock, call
 
 from mutagen.mp3 import EasyMP3
 
 from freitag import FreiSong, FreiTemplate, DEFAULT_FORMAT
-from freitag.operations import RenameOperation, ExtractOperation
+from freitag.operations import (RenameOperation, ExtractOperation,
+                                HumanizeOperation)
 
 
 class TestFreiSong(unittest.TestCase):
@@ -43,15 +44,12 @@ class TestFreiSong(unittest.TestCase):
         def getitem(name):
             return _tags[name]
 
-        def setitem(name, val):
-            _tags[name] = val
-
         def contains(key):
             return key in _tags
 
         self.mp3 = Mock()
         self.mp3.__getitem__ = Mock(side_effect=getitem)
-        self.mp3.__setitem__ = Mock(side_effect=setitem)
+        self.mp3.__setitem__ = Mock()
         self.mp3.__contains__ = Mock(side_effect=contains)
         self.mp3.filename = self._filename
 
@@ -83,6 +81,10 @@ class TestFreiSong(unittest.TestCase):
         self.song['foo'] = 'bar'
         self.mp3.__setitem__.assert_not_called_with('foo', 'bar')
 
+    def test_contains(self):
+        self.assertTrue('artist' in self.song)
+        self.mp3.__contains__.assert_called_with('artist')
+
     def test_update(self):
         self.song.update({'artist': 'Dennis Brown', 'title': 'Here I Come',
                           'foo': 'bar'})
@@ -102,16 +104,6 @@ class TestFreiSong(unittest.TestCase):
         self.song.save()
         self.filesystem.rename.assert_not_called_with(self._new_filename,
                                                       self._new_filename)
-
-    def test_humanize(self):
-        self.song['title'] = 'One_love'
-        self.song['artist'] = 'bob marley'
-        self.song['album'] = 'EXODUS'
-        self.song.humanize()
-
-        self.assertEqual('One Love',   self.song['title'])
-        self.assertEqual('Bob Marley', self.song['artist'])
-        self.assertEqual('Exodus',     self.song['album'])
 
 
 class FreiTemplateTest(unittest.TestCase):
@@ -151,6 +143,36 @@ class ExtractOperationTest(unittest.TestCase):
         self.song.update.assert_called_with({'tracknumber': '01',
                                             'artist': 'Dennis Brown',
                                             'title':  'Here I Come'})
+
+
+class HumanizeOperationTest(unittest.TestCase):
+
+    def setUp(self):
+        tags = {'title': 'One_love', 'artist': 'bob marley', 'album': 'EXODUS'}
+        self.song = Mock()
+        self.song.__getitem__ = Mock(side_effect=lambda tag: tags[tag])
+        self.song.__setitem__ = Mock()
+        self.song.__contains__ = Mock()
+
+        self.humanize_operation = HumanizeOperation()
+
+    def test_apply(self):
+        self.humanize_operation.apply(self.song)
+
+        expected_setitem_calls = [call('title', 'One Love'),
+                                  call('artist', 'Bob Marley'),
+                                  call('album', 'Exodus')]
+        actual_setitem_calls = self.song.__setitem__.call_args_list
+
+        expected_contains_calls = [call('title'), call('artist'),
+                                   call('album')]
+        actual_contains_calls = self.song.__contains__.call_args_list
+
+        for expected_call in expected_setitem_calls:
+            self.assertTrue(expected_call in actual_setitem_calls)
+
+        for expected_call in expected_contains_calls:
+            self.assertTrue(expected_call in actual_contains_calls)
 
 
 if __name__ == '__main__':

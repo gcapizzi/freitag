@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from string import Template, capwords
+from string import Template
 from os.path import exists
 from shutil import move
 
@@ -86,6 +86,9 @@ class FreiSong:
     def _fix_tracknumber(self, tracknumber):
         return tracknumber.split('/')[0].rjust(2, '0')
 
+    def __contains__(self, tag):
+        return tag in self.mp3
+
     def __setitem__(self, key, value):
         if key in self.mp3:
             self.mp3[key] = value
@@ -114,14 +117,3 @@ class FreiSong:
             self.prev_filename = self.filename
 
         self.mp3.filename = self.filename
-
-    def humanize(self):
-        """Humanize album, title and artist tags from tags dictionary."""
-        tags_to_humanize = ['album', 'artist', 'title']
-
-        for tag in tags_to_humanize:
-            if tag in self.mp3:
-                self[tag] = self._humanize_tag(self[tag])
-
-    def _humanize_tag(self, string):
-        return capwords(string.replace('_', ' '))
