@@ -57,13 +57,11 @@ class FreiSong:
 
     """The main FreiTag class, representing a song."""
 
-    def __init__(self, mp3, filesystem=FileSystem(),
-                 template=FreiTemplate(DEFAULT_FORMAT)):
+    def __init__(self, mp3, filesystem=FileSystem()):
         self.mp3 = mp3
         self.prev_filename = mp3.filename
         self.filename = mp3.filename
         self.filesystem = filesystem
-        self.template = template
 
     def __getitem__(self, key):
         value = ''

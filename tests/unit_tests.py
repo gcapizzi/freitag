@@ -61,8 +61,7 @@ class TestFreiSong(unittest.TestCase):
         self.template.delimiter = FreiTemplate.delimiter
         self.template.safe_substitute.return_value = self._song_name + '   '
 
-        self.song = FreiSong(self.mp3, filesystem=self.filesystem,
-                             template=self.template)
+        self.song = FreiSong(self.mp3, filesystem=self.filesystem)
 
     def test_getitem(self):
         self.assertEqual('Bob Marley', self.song['artist'])

@@ -48,11 +48,8 @@ def main():
 
     args = parser.parse_args()
 
-    songs = [FreiSong(EasyMP3(file), template=FreiTemplate(args.format))
-             for file in args.files]
+    songs = [FreiSong(EasyMP3(file)) for file in args.files]
 
-    # If not calling the 'get' command, try to import clint.
-    # If clint is imported successfully, use it to print a progress bar.
     if args.command != 'get':
         try:
             from clint.textui import progress
