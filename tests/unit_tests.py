@@ -26,7 +26,8 @@ from exam.mock import Mock
 
 from mutagen.mp3 import EasyMP3
 
-from freitag import FreiSong, FreiTemplate, RenameOperation, DEFAULT_FORMAT
+from freitag import FreiSong, FreiTemplate, DEFAULT_FORMAT
+from freitag.operations import RenameOperation, ExtractOperation
 
 
 class TestFreiSong(unittest.TestCase):
@@ -102,14 +103,6 @@ class TestFreiSong(unittest.TestCase):
         self.filesystem.rename.assert_not_called_with(self._new_filename,
                                                       self._new_filename)
 
-    def test_extract(self):
-        self.song.filename = '01 - Dennis Brown - Here I Come.mp3'
-        self.song.extract()
-
-        self.mp3.update.assert_called_with({'tracknumber': '01',
-                                            'artist': 'Dennis Brown',
-                                            'title':  'Here I Come'})
-
     def test_humanize(self):
         self.song['title'] = 'One_love'
         self.song['artist'] = 'bob marley'
@@ -143,6 +136,21 @@ class RenameOperationTest(unittest.TestCase):
         self.template.safe_substitute.assert_called_with(self.song)
         expected_filename = 'a filename'
         self.assertEquals(expected_filename, self.song.filename)
+
+
+class ExtractOperationTest(unittest.TestCase):
+
+    def setUp(self):
+        self.song = Mock()
+        self.song.filename = '01 - Dennis Brown - Here I Come.mp3'
+        self.extract_operation = ExtractOperation()
+
+    def test_apply(self):
+        self.extract_operation.apply(self.song)
+
+        self.song.update.assert_called_with({'tracknumber': '01',
+                                            'artist': 'Dennis Brown',
+                                            'title':  'Here I Come'})
 
 
 if __name__ == '__main__':

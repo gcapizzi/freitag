@@ -20,10 +20,8 @@
 
 
 from string import Template, capwords
-from os import sep
 from os.path import exists
 from shutil import move
-from re import sub, search
 
 from mutagen.mp3 import EasyMP3
 
@@ -117,38 +115,6 @@ class FreiSong:
 
         self.mp3.filename = self.filename
 
-    def extract(self):
-        """Extracts values from a string according to the specified format."""
-        tags = self._extract_tags(self.filename, self.template.template)
-        self.update(tags)
-
-    def _extract_tags(self, filename, format):
-        regex = self._format_to_regex(format)
-        return search(regex, filename).groupdict()
-
-    def _format_to_regex(self, format):
-        # the regex pattern that matches tags in the format string
-        format_opts = {'delimiter': self.template.delimiter,
-                       'pattern': self.template.idpattern}
-        tag_pattern = '{delimiter}({pattern})'.format(**format_opts)
-
-        def _get_regex_for_tag(m):
-            """Take a match object and return a regex with a properly named
-            group.
-
-            """
-            tag_name = m.group(1)
-            tag_regex = '[^%s]*' % sep
-
-            # non-greedy regex for tracknumber tag
-            if tag_name == 'tracknumber':
-                tag_regex += '?'
-
-            return '(?P<{tag_name}>{tag_regex})'.format(tag_name=tag_name,
-                                                        tag_regex=tag_regex)
-
-        return sub(tag_pattern, _get_regex_for_tag, format)
-
     def humanize(self):
         """Humanize album, title and artist tags from tags dictionary."""
         tags_to_humanize = ['album', 'artist', 'title']
@@ -159,21 +125,3 @@ class FreiSong:
 
     def _humanize_tag(self, string):
         return capwords(string.replace('_', ' '))
-
-
-class Operation:
-    def apply(self, song):
-        raise NotImplementError
-
-
-class RenameOperation(Operation):
-
-    def __init__(self, template=FreiTemplate(DEFAULT_FORMAT)):
-        self.template = template
-
-    def _format(self, song):
-        return self.template.safe_substitute(song).strip()
-
-    def apply(self, song):
-        """Rename song according to the specified format."""
-        song.filename = self._format(song)

@@ -22,8 +22,8 @@
 import argparse
 from sys import exit
 
-from freitag import FreiSong, FreiTemplate, RenameOperation
-from freitag import DEFAULT_FORMAT, TAGS
+from freitag import FreiSong, FreiTemplate, DEFAULT_FORMAT, TAGS
+from freitag.operations import RenameOperation, ExtractOperation
 
 from mutagen.mp3 import EasyMP3
 
@@ -67,7 +67,7 @@ def main():
     elif args.command == 'rename':
         rename(songs, args.format)
     elif args.command == 'extract':
-        extract(songs)
+        extract(songs, args.format)
     elif args.command == 'humanize':
         humanize(songs)
 
@@ -94,12 +94,13 @@ def rename(songs, format):
         song.save()
 
 
-def extract(songs):
+def extract(songs, format):
     """Tag songs extracting tag values from its filename according to format.
 
     """
+    extract_operation = ExtractOperation(template=FreiTemplate(format))
     for song in songs:
-        song.extract()
+        extract_operation.apply(song)
         song.save()
 
 
