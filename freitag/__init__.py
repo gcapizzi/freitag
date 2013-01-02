@@ -20,8 +20,10 @@
 
 
 from string import Template
+from os import sep
 from os.path import exists
 from shutil import move
+from re import sub, search
 
 from mutagen.mp3 import EasyMP3
 
@@ -46,6 +48,33 @@ class FreiTemplate(Template):
 
     def format(self, values):
         return self.safe_substitute(values).strip()
+
+    def extract(self, string):
+        regex = self._template_to_regex(self.template)
+        return search(regex, string).groupdict()
+
+    def _template_to_regex(self, template):
+        # the regex pattern that matches tags in the template string
+        tag_pattern = '{delimiter}({pattern})'.format(delimiter=self.delimiter,
+                                                      pattern=self.idpattern)
+
+        def tag_match_to_regex(m):
+            """Take a match object and return a regex with a properly named
+            group.
+
+            """
+            tag_name = m.group(1)
+            tag_regex = '[^%s]*' % sep
+
+            # non-greedy regex for tracknumber tag
+            # TODO this is a hack!
+            if tag_name == 'tracknumber':
+                tag_regex += '?'
+
+            return '(?P<{tag_name}>{tag_regex})'.format(tag_name=tag_name,
+                                                        tag_regex=tag_regex)
+
+        return sub(tag_pattern, tag_match_to_regex, template)
 
 
 class FileSystem:

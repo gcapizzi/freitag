@@ -112,6 +112,12 @@ class FreiTemplateTest(unittest.TestCase):
         template = FreiTemplate('   %artist - %title   ')
         self.assertEquals('Bob Marley - One Love', template.format(tags))
 
+    def test_extract(self):
+        template = FreiTemplate('%one - %two_%three')
+        string = 'one word - two words_this three words'
+        tags = {'one': 'one word', 'two': 'two words',
+                'three': 'this three words'}
+        self.assertEquals(tags, template.extract(string))
 
 class RenameOperationTest(unittest.TestCase):
 

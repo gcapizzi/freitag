@@ -19,8 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from re import sub, search
-from os import sep
+from re import sub
 from string import capwords
 
 from freitag import FreiTemplate, DEFAULT_FORMAT
@@ -50,35 +49,8 @@ class ExtractOperation(Operation):
         self.template = template
 
     def apply(self, song):
-        tags = self._extract_tags(song.filename, self.template.template)
+        tags = self.template.extract(song.filename)
         song.update(tags)
-
-    def _extract_tags(self, filename, format):
-        regex = self._format_to_regex(format)
-        return search(regex, filename).groupdict()
-
-    def _format_to_regex(self, format):
-        # the regex pattern that matches tags in the format string
-        format_opts = {'delimiter': self.template.delimiter,
-                       'pattern': self.template.idpattern}
-        tag_pattern = '{delimiter}({pattern})'.format(**format_opts)
-
-        def _get_regex_for_tag(m):
-            """Take a match object and return a regex with a properly named
-            group.
-
-            """
-            tag_name = m.group(1)
-            tag_regex = '[^%s]*' % sep
-
-            # non-greedy regex for tracknumber tag
-            if tag_name == 'tracknumber':
-                tag_regex += '?'
-
-            return '(?P<{tag_name}>{tag_regex})'.format(tag_name=tag_name,
-                                                        tag_regex=tag_regex)
-
-        return sub(tag_pattern, _get_regex_for_tag, format)
 
 
 class HumanizeOperation(Operation):
