@@ -53,28 +53,21 @@ class FreiTemplate(Template):
         regex = self._template_to_regex(self.template)
         return search(regex, string).groupdict()
 
+    def _tag_to_regex(self, tag):
+        tag_regex = '[^%s]*' % sep
+
+        # non-greedy regex for tracknumber tag
+        # TODO this is a hack!
+        if tag == 'tracknumber':
+            tag_regex += '?'
+
+        return '(?P<{0}>{1})'.format(tag, tag_regex)
+
     def _template_to_regex(self, template):
         # the regex pattern that matches tags in the template string
-        tag_pattern = '{delimiter}({pattern})'.format(delimiter=self.delimiter,
-                                                      pattern=self.idpattern)
-
-        def tag_match_to_regex(m):
-            """Take a match object and return a regex with a properly named
-            group.
-
-            """
-            tag_name = m.group(1)
-            tag_regex = '[^%s]*' % sep
-
-            # non-greedy regex for tracknumber tag
-            # TODO this is a hack!
-            if tag_name == 'tracknumber':
-                tag_regex += '?'
-
-            return '(?P<{tag_name}>{tag_regex})'.format(tag_name=tag_name,
-                                                        tag_regex=tag_regex)
-
-        return sub(tag_pattern, tag_match_to_regex, template)
+        tag_pattern = '{0}({1})'.format(self.delimiter, self.idpattern)
+        tag_to_regex = lambda m: self._tag_to_regex(m.group(1))
+        return sub(tag_pattern, tag_to_regex, template)
 
 
 class FileSystem:
