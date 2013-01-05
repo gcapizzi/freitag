@@ -29,10 +29,18 @@ from freitag.operations import (RenameOperation, ExtractOperation,
 from mutagen.mp3 import EasyMP3
 
 
+COMMANDS = {
+        'get': get,
+        'set': set,
+        'rename': rename,
+        'extract': extract,
+        'humanize': humanize
+        }
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=['get', 'set', 'rename',
-                                            'extract', 'humanize'])
+    parser.add_argument('command', choices=COMMANDS.keys())
     parser.add_argument('files', nargs='+')
     parser.add_argument('--format', '-f', default=DEFAULT_FORMAT,
                         help='The format used by "get", "rename" and '
@@ -48,21 +56,7 @@ def main():
 
     args = parser.parse_args()
 
-    songs = get_songs(args.files)
-
-    if args.command != 'get':
-        songs = progress_bar(songs)
-
-    if args.command == 'get':
-        get(songs, args.format)
-    elif args.command == 'set':
-        set(songs, args)
-    elif args.command == 'rename':
-        rename(songs, args.format)
-    elif args.command == 'extract':
-        extract(songs, args.format)
-    elif args.command == 'humanize':
-        humanize(songs)
+    COMMANDS[args.command](args)
 
 
 def get_songs(files):
@@ -78,40 +72,49 @@ def progress_bar(songs):
         return progress.bar(songs)
 
 
-def get(songs, format):
+def get(args):
     """Print the songs informations according to the specified format."""
-    template = FreiTemplate(format)
+    songs = get_songs(args.files)
+    template = FreiTemplate(args.format)
     for song in songs:
         print template.format(song)
 
 
-def set(songs, args):
+def set(args):
     """Tag songs using arguments from argparse."""
+    songs = get_songs(args.files)
+    songs = progress_bar(songs)
     for song in songs:
         song.update(args.__dict__)
         song.save()
 
 
-def rename(songs, format):
+def rename(args):
     """Rename songs according to format."""
-    rename_operation = RenameOperation(template=FreiTemplate(format))
+    songs = get_songs(args.files)
+    songs = progress_bar(songs)
+    rename_operation = RenameOperation(template=FreiTemplate(args.format))
     for song in songs:
         rename_operation.apply(song)
         song.save()
 
 
-def extract(songs, format):
+def extract(args):
     """Tag songs extracting tag values from its filename according to format.
 
     """
-    extract_operation = ExtractOperation(template=FreiTemplate(format))
+    songs = get_songs(args.files)
+    songs = progress_bar(songs)
+    extract_operation = ExtractOperation(template=FreiTemplate(args.format))
     for song in songs:
         extract_operation.apply(song)
         song.save()
 
 
-def humanize(songs):
+def humanize(args):
     """Humanize album, artist and title tags in songs."""
+    songs = get_songs(args.files)
+    songs = progress_bar(songs)
     humanize_operation = HumanizeOperation()
     for song in songs:
         humanize_operation.apply(song)
