@@ -48,15 +48,10 @@ def main():
 
     args = parser.parse_args()
 
-    songs = [FreiSong(EasyMP3(file)) for file in args.files]
+    songs = get_songs(args.files)
 
     if args.command != 'get':
-        try:
-            from clint.textui import progress
-        except ImportError:
-            pass
-        else:
-            songs = progress.bar(songs)
+        songs = progress_bar(songs)
 
     if args.command == 'get':
         get(songs, args.format)
@@ -68,6 +63,19 @@ def main():
         extract(songs, args.format)
     elif args.command == 'humanize':
         humanize(songs)
+
+
+def get_songs(files):
+    return [FreiSong(EasyMP3(file)) for file in files]
+
+
+def progress_bar(songs):
+    try:
+        from clint.textui import progress
+    except ImportError:
+        return songs
+    else:
+        return progress.bar(songs)
 
 
 def get(songs, format):
