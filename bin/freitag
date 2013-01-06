@@ -42,6 +42,17 @@ def progress_bar(songs):
         return progress.bar(songs)
 
 
+def get_songs_and_progress_bar(files):
+    return progress_bar(get_songs(files))
+
+
+def apply_operation_and_save(operation, files):
+    songs = get_songs_and_progress_bar(files)
+    for song in songs:
+        operation.apply(song)
+        song.save()
+
+
 def get(args):
     """Print the songs informations according to the specified format."""
     songs = get_songs(args.files)
@@ -52,8 +63,7 @@ def get(args):
 
 def set(args):
     """Tag songs using arguments from argparse."""
-    songs = get_songs(args.files)
-    songs = progress_bar(songs)
+    songs = get_songs_and_progress_bar(args.files)
     for song in songs:
         song.update(args.__dict__)
         song.save()
@@ -61,33 +71,22 @@ def set(args):
 
 def rename(args):
     """Rename songs according to format."""
-    songs = get_songs(args.files)
-    songs = progress_bar(songs)
     rename_operation = RenameOperation(template=FreiTemplate(args.format))
-    for song in songs:
-        rename_operation.apply(song)
-        song.save()
+    apply_operation_and_save(rename_operation, args.files)
 
 
 def extract(args):
     """Tag songs extracting tag values from its filename according to format.
 
     """
-    songs = get_songs(args.files)
-    songs = progress_bar(songs)
     extract_operation = ExtractOperation(template=FreiTemplate(args.format))
-    for song in songs:
-        extract_operation.apply(song)
-        song.save()
+    apply_operation_and_save(extract_operation, args.files)
 
 
 def humanize(args):
     """Humanize album, artist and title tags in songs."""
-    songs = get_songs_and_progress_bar(args.files)
     humanize_operation = HumanizeOperation()
-    for song in songs:
-        humanize_operation.apply(song)
-        song.save()
+    apply_operation_and_save(humanize_operation, args.files)
 
 
 COMMANDS = {
