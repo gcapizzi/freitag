@@ -27,8 +27,8 @@ from exam.mock import Mock, call
 from mutagen.mp3 import EasyMP3
 
 from freitag import FreiSong, FreiTemplate, DEFAULT_FORMAT
-from freitag.operations import (RenameOperation, ExtractOperation,
-                                HumanizeOperation)
+from freitag.operations import (SetOperation, RenameOperation,
+                                ExtractOperation, HumanizeOperation)
 
 
 class TestFreiSong(unittest.TestCase):
@@ -117,6 +117,19 @@ class FreiTemplateTest(unittest.TestCase):
         string = '01 Hello World.mp3'
         tags = { 'tracknumber': '01', 'title': 'Hello World' }
         self.assertEquals(tags, template.extract(string))
+
+
+class SetOperationTest(unittest.TestCase):
+
+    def setUp(self):
+        self.song = Mock()
+        self.tags = {'one': 1, 'two': 2, 'three': 3}
+        self.set_operation = SetOperation(self.tags)
+
+    def test_apply(self):
+        self.set_operation.apply(self.song)
+
+        self.song.update.assert_called_with(self.tags)
 
 
 class RenameOperationTest(unittest.TestCase):

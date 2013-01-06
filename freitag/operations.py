@@ -30,6 +30,15 @@ class Operation:
         raise NotImplementError
 
 
+class SetOperation(Operation):
+
+    def __init__(self, tags):
+        self.tags = tags
+
+    def apply(self, song):
+        song.update(self.tags)
+
+
 class RenameOperation(Operation):
 
     def __init__(self, template=FreiTemplate(DEFAULT_FORMAT)):

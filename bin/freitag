@@ -23,8 +23,8 @@ import argparse
 from sys import exit
 
 from freitag import FreiSong, FreiTemplate, DEFAULT_FORMAT, TAGS
-from freitag.operations import (RenameOperation, ExtractOperation,
-                                HumanizeOperation)
+from freitag.operations import (SetOperation, RenameOperation,
+                                ExtractOperation, HumanizeOperation)
 
 from mutagen.mp3 import EasyMP3
 
@@ -63,10 +63,8 @@ def get(args):
 
 def set(args):
     """Tag songs using arguments from argparse."""
-    songs = get_songs_and_progress_bar(args.files)
-    for song in songs:
-        song.update(args.__dict__)
-        song.save()
+    set_operation = SetOperation(args.__dict__)
+    apply_operation_and_save(set_operation, args.files)
 
 
 def rename(args):
