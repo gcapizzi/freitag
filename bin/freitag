@@ -29,36 +29,6 @@ from freitag.operations import (RenameOperation, ExtractOperation,
 from mutagen.mp3 import EasyMP3
 
 
-COMMANDS = {
-        'get': get,
-        'set': set,
-        'rename': rename,
-        'extract': extract,
-        'humanize': humanize
-        }
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=COMMANDS.keys())
-    parser.add_argument('files', nargs='+')
-    parser.add_argument('--format', '-f', default=DEFAULT_FORMAT,
-                        help='The format used by "get", "rename" and '
-                        + '"extract" commands. You can use the following '
-                        + 'placeholders: '
-                        + ', '.join(['%%{0}'.format(t) for t in TAGS]))
-
-    # tag setters
-    for tag, props in TAGS.iteritems():
-        long_opt = '--%s' % tag
-        short_opt = '-%s' % props['abbr']
-        parser.add_argument(long_opt, short_opt, help=props['help'])
-
-    args = parser.parse_args()
-
-    COMMANDS[args.command](args)
-
-
 def get_songs(files):
     return [FreiSong(EasyMP3(file)) for file in files]
 
@@ -113,12 +83,41 @@ def extract(args):
 
 def humanize(args):
     """Humanize album, artist and title tags in songs."""
-    songs = get_songs(args.files)
-    songs = progress_bar(songs)
+    songs = get_songs_and_progress_bar(args.files)
     humanize_operation = HumanizeOperation()
     for song in songs:
         humanize_operation.apply(song)
         song.save()
+
+
+COMMANDS = {
+        'get': get,
+        'set': set,
+        'rename': rename,
+        'extract': extract,
+        'humanize': humanize
+        }
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('command', choices=COMMANDS.keys())
+    parser.add_argument('files', nargs='+')
+    parser.add_argument('--format', '-f', default=DEFAULT_FORMAT,
+                        help='The format used by "get", "rename" and '
+                        + '"extract" commands. You can use the following '
+                        + 'placeholders: '
+                        + ', '.join(['%%{0}'.format(t) for t in TAGS]))
+
+    # tag setters
+    for tag, props in TAGS.iteritems():
+        long_opt = '--%s' % tag
+        short_opt = '-%s' % props['abbr']
+        parser.add_argument(long_opt, short_opt, help=props['help'])
+
+    args = parser.parse_args()
+
+    COMMANDS[args.command](args)
 
 
 if __name__ == '__main__':
