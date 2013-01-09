@@ -26,6 +26,7 @@ from freitag import FreiTemplate, DEFAULT_FORMAT
 
 
 class Operation:
+
     def apply(self, song):
         raise NotImplementError
 

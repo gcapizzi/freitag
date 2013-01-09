@@ -22,83 +22,13 @@
 import argparse
 from sys import exit
 
-from freitag import FreiSong, FreiTemplate, DEFAULT_FORMAT, TAGS
-from freitag.operations import (SetOperation, RenameOperation,
-                                ExtractOperation, HumanizeOperation)
-
-from mutagen.mp3 import EasyMP3
-
-
-def get_songs(files):
-    return [FreiSong(EasyMP3(file)) for file in files]
-
-
-def progress_bar(songs):
-    try:
-        from clint.textui import progress
-    except ImportError:
-        return songs
-    else:
-        return progress.bar(songs)
-
-
-def get_songs_and_progress_bar(files):
-    return progress_bar(get_songs(files))
-
-
-def apply_operation_and_save(operation, files):
-    songs = get_songs_and_progress_bar(files)
-    for song in songs:
-        operation.apply(song)
-        song.save()
-
-
-def get(args):
-    """Print the songs informations according to the specified format."""
-    songs = get_songs(args.files)
-    template = FreiTemplate(args.format)
-    for song in songs:
-        print template.format(song)
-
-
-def set(args):
-    """Tag songs using arguments from argparse."""
-    set_operation = SetOperation(args.__dict__)
-    apply_operation_and_save(set_operation, args.files)
-
-
-def rename(args):
-    """Rename songs according to format."""
-    rename_operation = RenameOperation(template=FreiTemplate(args.format))
-    apply_operation_and_save(rename_operation, args.files)
-
-
-def extract(args):
-    """Tag songs extracting tag values from its filename according to format.
-
-    """
-    extract_operation = ExtractOperation(template=FreiTemplate(args.format))
-    apply_operation_and_save(extract_operation, args.files)
-
-
-def humanize(args):
-    """Humanize album, artist and title tags in songs."""
-    humanize_operation = HumanizeOperation()
-    apply_operation_and_save(humanize_operation, args.files)
-
-
-COMMANDS = {
-        'get': get,
-        'set': set,
-        'rename': rename,
-        'extract': extract,
-        'humanize': humanize
-        }
+from freitag import DEFAULT_FORMAT, TAGS
+from freitag.commands import CommandFactory
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=COMMANDS.keys())
+    parser.add_argument('command', choices=CommandFactory.COMMANDS)
     parser.add_argument('files', nargs='+')
     parser.add_argument('--format', '-f', default=DEFAULT_FORMAT,
                         help='The format used by "get", "rename" and '
@@ -114,7 +44,7 @@ def main():
 
     args = parser.parse_args()
 
-    COMMANDS[args.command](args)
+    CommandFactory().from_args(args).run(args)
 
 
 if __name__ == '__main__':
