@@ -71,6 +71,7 @@ class FreiTemplate(Template):
 
 
 class FileSystem:
+
     def rename(self, old_name, new_name):
         move(old_name, new_name)
 
