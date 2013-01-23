@@ -45,7 +45,7 @@ class AcceptanceTest(unittest.TestCase):
             remove(self.TEMP_MP3)
 
     def run_freitag(self, *params):
-        cmd = ['bin/freitag'] + list(params)
+        cmd = ['freitag'] + list(params)
         return Popen(cmd, stdout=PIPE).communicate()[0]
 
     def test_get(self):
