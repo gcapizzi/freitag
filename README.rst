@@ -14,19 +14,23 @@ Printing tags
 
 FreiTag can print tags according to a format. Just type:
 
+.. code-block:: shell
+
     $ freitag get song.mp3
     01 - Artist - Title.mp3
 
 To specify your own format, use the format parameter:
+
+.. code-block:: shell
 
     $ freitag get song.mp3 --format="*** %artist ***"
     *** Artist ***
 
 The format string can contain the following placeholders:
 
-    %artist
-    %title
-    %album
-    %tracknumber
-    %date
-    %discnumber
+* %artist
+* %title
+* %album
+* %tracknumber
+* %date
+* %discnumber
