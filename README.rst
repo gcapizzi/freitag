@@ -10,6 +10,15 @@ FreiTag is a command line tool to tag and rename your MP3s. It can:
 * rename MP3s using tags,
 * humanize tags.
 
+Installation
+============
+
+Just use :code:`pip` or :code:`easy_install`:
+
+.. code-block:: shell
+
+    $ pip install freitag
+
 Usage
 =====
 
