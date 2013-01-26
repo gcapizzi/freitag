@@ -10,8 +10,11 @@ FreiTag is a command line tool to tag and rename your MP3s. It can:
 * rename MP3s using tags,
 * humanize tags.
 
+Usage
+=====
+
 Printing tags
-=============
+-------------
 
 FreiTag can print tags according to a format you specify. Just type:
 
@@ -30,7 +33,7 @@ The format string can contain the following placeholders:
 * %discnumber
 
 Setting tags
-============
+------------
 
 To set specific values for the song tags, use the following parameters:
 
@@ -50,7 +53,7 @@ For example:
     Bob Marley - Exodus
 
 Extracting tags
-===============
+---------------
 
 If your file is well-named but its tags are wrong and/or missing, you can
 extract tags from the file name itself. Of course you'll have to specify the
@@ -65,7 +68,7 @@ format used by the name of the file.
 Don't forget to include the file extension in the extraction format!
 
 Renaming
-========
+--------
 
 You can rename your MP3s accorsing to their tags:
 
@@ -77,7 +80,7 @@ You can rename your MP3s accorsing to their tags:
 Remember to include the extension in the format.
 
 Humanizing
-==========
+----------
 
 FreiTag can improve your song's tags removing underscores (_) and capitalizing
 words.
