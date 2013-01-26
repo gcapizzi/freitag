@@ -57,10 +57,8 @@ format used by the name of the file.
 
 .. code-block:: shell
 
-    $ freitag extract "03 - One Love - Bob Marley.mp3" --format "%tracknumber
-    - %title - %artist.mp3"
-    $ freitag get "03 - One Love - Bob Marley.mp3" --format "%artist
-    - %title"
+    $ freitag extract "03 - One Love - Bob Marley.mp3" --format "%tracknumber - %title - %artist.mp3"
+    $ freitag get "03 - One Love - Bob Marley.mp3" --format "%artist - %title"
     Bob Marley - One Love
 
 Don't forget to include the file extension in the extraction format!
