@@ -25,24 +25,24 @@ FreiTag can print tags according to a format you specify. Just type:
 
 The format string can contain the following placeholders:
 
-* %artist
-* %title
-* %album
-* %tracknumber
-* %date
-* %discnumber
+* :code:`%artist`
+* :code:`%title`
+* :code:`%album`
+* :code:`%tracknumber`
+* :code:`%date`
+* :code:`%discnumber`
 
 Setting tags
 ------------
 
 To set specific values for the song tags, use the following parameters:
 
-* --artist
-* --title
-* --album
-* --tracknumber
-* --date
-* --discnumber
+* :code:`--artist`
+* :code:`--title`
+* :code:`--album`
+* :code:`--tracknumber`
+* :code:`--date`
+* :code:`--discnumber`
 
 For example:
 
