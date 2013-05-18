@@ -92,8 +92,6 @@ class FreiSong:
         if key in self.mp3:
             value = self._first(self.mp3[key])
 
-            # remove the slash and everything after it in track number
-            # and zero-pad it
             if key == 'tracknumber':
                 value = self._fix_tracknumber(value)
 
