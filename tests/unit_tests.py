@@ -65,13 +65,8 @@ class TestFreiSong(unittest.TestCase):
 
     def test_getitem(self):
         self.assertEqual('Bob Marley', self.song['artist'])
-        self.mp3.__getitem__.assert_called_with('artist')
-
         self.assertEqual('01', self.song['tracknumber'])
-        self.mp3.__getitem__.assert_called_with('tracknumber')
-
         self.assertEqual('', self.song['foo'])
-        self.mp3.__getitem__.assert_not_called_with('foo')
 
     def test_setitem(self):
         self.song['title'] = 'Here I Come'
@@ -82,7 +77,6 @@ class TestFreiSong(unittest.TestCase):
 
     def test_contains(self):
         self.assertTrue('artist' in self.song)
-        self.mp3.__contains__.assert_called_with('artist')
 
     def test_update(self):
         self.song.update({'artist': 'Dennis Brown', 'title': 'Here I Come',
@@ -115,7 +109,8 @@ class FreiTemplateTest(unittest.TestCase):
     def test_extract(self):
         template = FreiTemplate('%tracknumber %title.mp3')
         string = '01 Hello World.mp3'
-        tags = { 'tracknumber': '01', 'title': 'Hello World' }
+        tags = {'tracknumber': '01', 'title': 'Hello World'}
+
         self.assertEquals(tags, template.extract(string))
 
 
@@ -137,15 +132,15 @@ class RenameOperationTest(unittest.TestCase):
     def setUp(self):
         self.song = Mock()
         self.template = Mock()
-        self.filename = ' a filename '
-        self.template.safe_substitute.return_value = self.filename
         self.rename_operation = RenameOperation(self.template)
 
     def test_apply(self):
+        self.template.safe_substitute.return_value = ' a filename '
+
         self.rename_operation.apply(self.song)
+
         self.template.safe_substitute.assert_called_with(self.song)
-        expected_filename = 'a filename'
-        self.assertEquals(expected_filename, self.song.filename)
+        self.assertEquals('a filename', self.song.filename)
 
 
 class ExtractOperationTest(unittest.TestCase):
@@ -159,8 +154,8 @@ class ExtractOperationTest(unittest.TestCase):
         self.extract_operation.apply(self.song)
 
         self.song.update.assert_called_with({'tracknumber': '01',
-                                            'artist': 'Dennis Brown',
-                                            'title':  'Here I Come'})
+                                             'artist': 'Dennis Brown',
+                                             'title': 'Here I Come'})
 
 
 class HumanizeOperationTest(unittest.TestCase):
@@ -182,12 +177,12 @@ class HumanizeOperationTest(unittest.TestCase):
                                   call('album', 'Exodus')]
         actual_setitem_calls = self.song.__setitem__.call_args_list
 
+        for expected_call in expected_setitem_calls:
+            self.assertTrue(expected_call in actual_setitem_calls)
+
         expected_contains_calls = [call('title'), call('artist'),
                                    call('album')]
         actual_contains_calls = self.song.__contains__.call_args_list
-
-        for expected_call in expected_setitem_calls:
-            self.assertTrue(expected_call in actual_setitem_calls)
 
         for expected_call in expected_contains_calls:
             self.assertTrue(expected_call in actual_contains_calls)
