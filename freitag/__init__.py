@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+import locale
 from string import Template
 from os import sep
 from os.path import exists
@@ -27,6 +27,8 @@ from re import sub, search
 
 from mutagen.mp3 import EasyMP3
 
+locale.setlocale(locale.LC_ALL, '')
+ENCODING = locale.getlocale()[1]
 
 DEFAULT_FORMAT = "%tracknumber - %artist - %title.mp3"
 TAGS = {
@@ -123,7 +125,7 @@ class FreiSong:
                     if name in TAGS and value is not None)
 
     def _unicode_tags(self, tags):
-        return dict((name, unicode(value)) for (name, value) in tags.items())
+        return dict((name, unicode(value, ENCODING)) for (name, value) in tags.items())
 
     def save(self):
         """Save the song."""
