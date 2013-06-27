@@ -20,6 +20,7 @@
 
 
 import argparse
+import locale
 from sys import exit
 from string import Template, capwords
 from os import makedirs, sep
@@ -29,6 +30,8 @@ from re import sub, search
 
 from mutagen.mp3 import EasyMP3
 
+locale.setlocale(locale.LC_ALL, '')
+ENCODING = locale.getlocale()[1]
 
 class FormatTemplate(Template):
 
@@ -84,7 +87,7 @@ class FreiSong:
         tags = dict((name, value) for name, value in tags.items()
                 if name in self.TAGS and value is not None)
         # convert everything to unicode
-        tags = dict((name, unicode(value)) for (name, value) in tags.items())
+        tags = dict((name, unicode(value, ENCODING)) for (name, value) in tags.items())
         self.mp3.update(tags)
 
     def save(self):
