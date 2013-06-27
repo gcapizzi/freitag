@@ -1,0 +1,7 @@
+v0.1.0, 2013-01-24
+
+ - Initial release
+
+v0.1.2, 2013-01-26
+
+- Fix setup.py and publish on PyPI

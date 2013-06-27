@@ -1,18 +1,20 @@
 #! /usr/bin/env python
 
-from setuptools import setup
+from distutils.core import setup
 
-setup(name='freitag',
-    version='0.1',
-    description='Simple command line tool to tag and rename mp3s',
-    keywords=['mp3', 'tag'],
-    author='Giuseppe Capizzi',
+setup(
+    name='freitag',
+    version='0.1.2',
+    author='G. Capizzi',
     author_email='g.capizzi@gmail.com',
+    packages=['freitag'],
+    scripts=['bin/freitag'],
     url='https://github.com/gcapizzi/freitag',
-    license='GPL3',
-    packages=[],
-    py_modules=['freitag'],
-    install_requires=['mutagen', 'clint'],
-    entry_points={'console_scripts': ['freitag = freitag:main']}
+    license='GPL 3',
+    description='A command-line tool for MP3 tagging and renaming.',
+    install_requires=[
+        "argparse >= 1.2.1",
+        "mutagen >= 1.2.0",
+    ],
 )
 

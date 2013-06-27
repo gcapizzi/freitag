@@ -1,4 +1,9 @@
 TODO.txt
+MANIFEST
 *.swp
 *.pyc
 .DS_Store
+virtualenv
+*.egg-info
+build
+dist

@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+# encoding: utf-8
+#
+# FreiTAG - A simple command line tool to tag and rename mp3s.
+# Copyright (c) 2010-2011 Giuseppe Capizzi
+# mailto: g.capizzi@gmail.com
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+import argparse
+from sys import exit
+
+from freitag import DEFAULT_FORMAT, TAGS
+from freitag.commands import CommandFactory
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('command', choices=CommandFactory.COMMANDS)
+    parser.add_argument('files', nargs='+')
+    parser.add_argument('--format', '-f', default=DEFAULT_FORMAT,
+                        help='The format used by "get", "rename" and '
+                        + '"extract" commands. You can use the following '
+                        + 'placeholders: '
+                        + ', '.join(['%%{0}'.format(t) for t in TAGS]))
+
+    # tag setters
+    for tag, props in TAGS.iteritems():
+        long_opt = '--%s' % tag
+        short_opt = '-%s' % props['abbr']
+        parser.add_argument(long_opt, short_opt, help=props['help'])
+
+    args = parser.parse_args()
+
+    CommandFactory().from_args(args).run(args)
+
+
+if __name__ == '__main__':
+    exit(main())
